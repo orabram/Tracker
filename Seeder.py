@@ -21,7 +21,7 @@ class Seeder():
     def add_new_file(self, filename, chunks):
         self.socket.send("add#" + filename)
         self.socket.send(chunks)
-        self.files.add(filename)
+        self.files.append(filename)
 
     def modify_files_list(self, new_list):
         self.socket.send("list#" + new_list)
