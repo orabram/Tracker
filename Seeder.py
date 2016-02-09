@@ -8,11 +8,16 @@ class Seeder():
         self.ip = ip
         self.port = port
         self.socket = socket
-        self.files = []
+        self.files = {}
         self.profile = 0
 
     def mark_suspicious_files(self, filename):
         self.socket.send("mark#" + filename)
+        self.files[filename] = "suspicious"
+
+    def mark_as_not_suspicious(self, filename):
+        self.socket.send("unmark#" + filename)
+        self.files[filename] = "safe"
 
     def remove_file(self, filename):
         self.socket.send("remove#" + filename)
@@ -21,7 +26,7 @@ class Seeder():
     def add_new_file(self, filename, chunks):
         self.socket.send("add#" + filename)
         self.socket.send(chunks)
-        self.files.append(filename)
+        self.files[filename] = "safe"
 
     def modify_files_list(self, new_list):
         self.socket.send("list#" + new_list)
