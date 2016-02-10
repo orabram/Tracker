@@ -54,12 +54,25 @@ class seeder_communication_manager():
                     counter2 += 1
                 else:
                     s.add_new_file(file[(len(file) / counter) * counter2:])
+
     def remove_files(self, filename):
         for s in self.seeders_list:
-            try:
-                s.get_files_list.remove(filename)
+            if s.get_files_list().__contains__(filename):
                 s.remove_file(filename)
-    
+
+
+    def mark_as_suspicious(self, filename):
+        for s in self.seeders_list:
+            if s.get_files_list().__contains__(filename):
+                s.mark_as_suspicious(filename)
+
+    def mark_as_safe(self, filename):
+        for s in self.seeders_list:
+            if s.get_files_list().__contains__(filename):
+                s.mark_as_safe(filename)
+
+
+
 
 
 

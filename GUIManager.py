@@ -32,6 +32,10 @@ class gui_manager():
         elif command[0] == "addf":
             self.manager.divide_files(command[1])
         elif command[0] == "removef":
-            self.manager.
+            self.manager.remove_files(command[1])
+        elif command[0] == "mark":
+            self.manager.mark_as_suspicious(command[1])
+        elif command[0] == "unmark":
+            self.manager.mark_as_safe(command[1])
 
 
