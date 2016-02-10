@@ -1,7 +1,7 @@
 __author__ = 'Or'
 import socket
 
-BUFFER = 4098
+BUFFER = 4096
 
 class Seeder():
     def __int__(self, ip, port, socket):
