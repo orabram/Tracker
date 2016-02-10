@@ -5,6 +5,8 @@ import time
 import random
 
 BUFFER = 4096
+MIN_CONNECTION_ID = 10000000
+MAX_CONNECTION_ID = 99999999
 
 class ClientManager():
     def __init__(self, ip, port):
@@ -25,8 +27,8 @@ class ClientManager():
     def ParseRequest(self, packet, client_address, socket):
         action = packet[8:12]
         if action == 0:
-            connection_id = random.randrange(10000000, 99999999)
-            socket.sendto(0000 + packet[0:8] + connection_id, client_address)
+            connection_id = random.randrange(MIN_CONNECTION_ID, MAX_CONNECTION_ID)
+            socket.sendto(action + packet[0:8] + connection_id, client_address)
             self.downloaders[str(client_address)] = (str(time.time()) + "#" + str(connection_id) + "#None")
         elif action == 1:
             connection_id = packet[:8]
