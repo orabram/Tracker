@@ -7,7 +7,7 @@ import struct
 from multiprocessing import Process
 
 SELF_IP = "0.0.0.0"
-SELF_PORTS = [6881, 6882, 6883, 6884, 6885, 6886, 6887, 6888, 6889]
+GUI_PORT = 6666
 
 
 
