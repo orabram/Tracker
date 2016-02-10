@@ -17,7 +17,7 @@ class Seeder():
         self.socket.send("mark#" + filename)
         self.files[filename] = "suspicious"
 
-    def mark_as_not_suspicious(self, filename):
+    def mark_as_safe(self, filename):
         self.socket.send("unmark#" + filename)
         self.files[filename] = "safe"
 
