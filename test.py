@@ -1,4 +1,8 @@
 __author__ = 'Or'
-dict = {"a":1, "b":2, "c":3}
-dict["a"] = 3
-print dict
+
+l = {"1":1,"3":3,"4":4}
+l.pop("1")
+print l
+l = [1,2,3,4]
+l.remove(5)
+print l

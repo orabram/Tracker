@@ -26,5 +26,12 @@ class gui_manager():
         command = self.gui.recv(BUFFER)
         command = command.split(" ")
         if command[0] == "adds":
-            
+            self.manager.add_new_seeder(command[1], command[2])
+        elif command[0] == "removes":
+            self.manager.remove_seeder(command[1])
+        elif command[0] == "addf":
+            self.manager.divide_files(command[1])
+        elif command[0] == "removef":
+            self.manager.
+
 
