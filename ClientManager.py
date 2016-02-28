@@ -25,7 +25,6 @@ class ClientManager():
             (packet, client_address) = server_socket.recvfrom(BUFFER)
             self.ParseRequest(packet, client_address, server_socket)
 
-
     def ParseRequest(self, packet, client_address, socket):
         packet = struct.unpack(">qii")[0]
         action = int(packet[8:12])
@@ -35,7 +34,7 @@ class ClientManager():
             packet = action + transaction_id + connection_id
             packet = struct.pack(packet, ">iiq")
             socket.sendto(packet, client_address)
-            self.downloaders[str(client_address)] = (str(time.time()) + "#" + str(connection_id) + "#None")
+            self.downloaders[str(client_address)] = (str(time.time()) + "#" + str(connection_id) + "#None#None#L")
         elif action == 1:
             packet = struct.unpack(">qiissqqqiiiih")[0]
             connection_id = packet[:8]
@@ -44,9 +43,18 @@ class ClientManager():
             if current_time - int(connection_info[0]) < self.interval:
                 if connection_info[1] == connection_id:
                     transaction_id = packet[12:16]
-                    leechers = 0
-                    seeders = len(self.downloaders)
-                    seeders_dict = {}
+                    leechers = len(self.seeder_manager.get_seeders_list())
+                    seeders = 0
+                    for seeder in self.downloaders:
+                        if seeder[len(seeder) - 1] == "L":
+                            leechers += 1
+                        else:
+                            seeders += 1
+                    port = packet[96:98]
+
+
+
+
 
 
 
