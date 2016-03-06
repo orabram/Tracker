@@ -31,7 +31,7 @@ class ClientManager():
         if action == 0:
             connection_id = random.randrange(MIN_CONNECTION_ID, MAX_CONNECTION_ID)
             transaction_id = packet[12:16]
-            packet = action + transaction_id + connection_id
+            packet = str(action) + transaction_id + connection_id
             packet = struct.pack(packet, ">iiq")
             socket.sendto(packet, client_address)
             self.downloaders[str(client_address)] = (str(time.time()) + "#" + str(connection_id) + "#None#None#L")
@@ -43,14 +43,36 @@ class ClientManager():
             if current_time - int(connection_info[0]) < self.interval:
                 if connection_info[1] == connection_id:
                     transaction_id = packet[12:16]
-                    leechers = len(self.seeder_manager.get_seeders_list())
-                    seeders = 0
+                    event = int(packet[80:84])
+                    if event == 1:
+                        self.downloaders[str(client_address)][-1] = "S"
+                    seeders = len(self.seeder_manager.get_seeders_list()) #seeders = those who've done downloading
+                    leechers = 0 #leechers = downloaders
                     for seeder in self.downloaders:
-                        if seeder[len(seeder) - 1] == "L":
+                        if self.downloaders[seeder][-1] == "L":
                             leechers += 1
                         else:
                             seeders += 1
                     port = packet[96:98]
+                    if packet[84:88] == 0:
+                        ip = client_address
+                    else:
+                        ip = packet[84:88]
+                    interval = self.interval
+                    response_packet = str(action) + str(transaction_id) + str(interval) + str(leechers) + str(seeders)
+                    max_peers = int(packet[92:96])
+                    if max_peers == -1:
+                        max_peers = 50
+                    counter = 0
+                    encode = ""
+                    for peer in self.seeder_manager.get_seeders_list():
+                        if counter < max_peers:
+                            response_packet += str(peer.get_ip)
+                            response_packet += str(peer.get_port)
+                            encode += "ih"
+                            counter += 1
+                    if counter < max_peers:
+                        for downloader in self.downloaders
 
 
 

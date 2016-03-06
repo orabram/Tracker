@@ -51,3 +51,5 @@ class Seeder():
 
     def get_files_list(self):
         return self.files_list
+    def get_port(self):
+        return self.port
