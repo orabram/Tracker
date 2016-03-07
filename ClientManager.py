@@ -8,8 +8,11 @@ from SeedersManager import *
 BUFFER = 4096
 MIN_CONNECTION_ID = 10000000
 MAX_CONNECTION_ID = 99999999
+NO_SCRAPE_SUPPORT = "The tracker doesn't support scraping at the moment."
 CONNECTION_ID_EXPIRED = "The connection id has expired. Please resend an a connect request."
 WRONG_CONNECTION_ID = "The connection ID you were attempting to use is incorrect. Please resend a connect request."
+GENERIC_ERROR_MESSEAGE = "An error has occured. Please attemt to connect to the tracker again."
+
 class ClientManager():
     def __init__(self, ip, port, seeder_manager):
         self.interval = 120
@@ -37,11 +40,11 @@ class ClientManager():
             return True
         return False
 
-    def error_packet(self, message, transaction_id, ip, port, socket):
+    def error_packet(self, message, transaction_id, client_address, socket):
         action = "0003"
         packet = action + transaction_id + message
         packet = struct.pack(packet, "iis")
-        socket.sendto(packet, (ip, port))
+        socket.sendto(packet,client_address)
 
     def update_seeder(self, info_hash, connection_info, event, client_address):
         connection_info[-1] == info_hash + "#"
@@ -51,7 +54,15 @@ class ClientManager():
             status = "S"
         self.downloaders[str(client_address)][-1] = "S"
 
-    
+    def sort_seeders_and_leechers(self):
+        seeders = len(self.seeder_manager.get_seeders_list()) #seeders = those who've done downloading
+        leechers = 0 #leechers = downloaders
+        for seeder in self.downloaders:
+            if self.downloaders[seeder][-1] == "L":
+                leechers += 1
+            else:
+                seeders += 1
+        return seeders, leechers
 
     def ParseRequest(self, packet, client_address, socket):
         edited_packet = struct.unpack(">qii", packet)[0]
@@ -59,63 +70,66 @@ class ClientManager():
         if action == 0:
             connection_id = random.randrange(MIN_CONNECTION_ID, MAX_CONNECTION_ID)
             transaction_id = packet[12:16]
-            packet = str(action) + transaction_id + connection_id
-            packet = struct.pack(packet, ">iiq")
-            socket.sendto(packet, client_address)
-            self.downloaders[str(client_address)] = (str(time.time()) + "#" + str(connection_id) + "##L")
+            try:
+                packet = str(action) + transaction_id + connection_id
+                packet = struct.pack(packet, ">iiq")
+                socket.sendto(packet, client_address)
+                self.downloaders[str(client_address)] = (str(time.time()) + "#" + str(connection_id) + "##L")
+            except:
+                self.error_packet(GENERIC_ERROR_MESSEAGE, transaction_id, client_address, socket)
         elif action == 1:
             packet = struct.unpack(">qiissqqqiiiih", packet)[0]
             connection_id = packet[:8]
             transaction_id = packet[12:16]
-            connection_info = self.downloaders[str(client_address)].split("#")
-            if not self.valid_time(connection_info):
-                self.error_packet(CONNECTION_ID_EXPIRED, transaction_id, client_address, socket)
-            if not self.valid_connection_id(connection_info, connection_id):
-                self.error_packet(WRONG_CONNECTION_ID, transaction_id, client_address, socket)
-            info_hash = packet[18:36]
-            event = int(packet[80:84])
-            self.update_seeder(info_hash, connection_info, event, client_address)
-            seeders = len(self.seeder_manager.get_seeders_list()) #seeders = those who've done downloading
-            leechers = 0 #leechers = downloaders
-            for seeder in self.downloaders:
-                if self.downloaders[seeder][-1] == "L":
-                    leechers += 1
+            try:
+                connection_info = self.downloaders[str(client_address)].split("#")
+                if not self.valid_time(connection_info):
+                    self.error_packet(CONNECTION_ID_EXPIRED, transaction_id, client_address, socket)
+                if not self.valid_connection_id(connection_info, connection_id):
+                    self.error_packet(WRONG_CONNECTION_ID, transaction_id, client_address, socket)
+                info_hash = packet[18:36]
+                event = int(packet[80:84])
+                self.update_seeder(info_hash, connection_info, event, client_address)
+                seeders, leechers = self.sort_seeders_and_leechers()
+                port = packet[96:98]
+                if packet[84:88] == 0: #If the sent ip is zero, I'll send it back to the sender.
+                    ip = client_address
                 else:
-                    seeders += 1
-            port = packet[96:98]
-            if packet[84:88] == 0: #If the sent ip is zero, I'll send it back to the sender.
-                ip = client_address
-            else:
-                ip = packet[84:88] #Otherwise, I'll send it to the given ip.
-            interval = self.interval
-            response_packet = str(action) + str(transaction_id) + str(interval) + str(leechers) + str(seeders)
-            max_peers = int(packet[92:96])
-            if max_peers == -1:
-                max_peers = 50
-            counter = 0
-            encode = ""
-            for peer in self.seeder_manager.get_seeders_list():
-                if counter < max_peers:
-                    if peer.get_info_hash_list().contains(info_hash):
-                        response_packet += str(peer.get_ip)
-                        response_packet += str(peer.get_port)
-                        encode += "ih"
-                        counter += 1
-            for downloader in self.downloaders:
-                if counter < max_peers:
-                    info = downloader.split("#")
-                    if info.contains(info_hash):
-                        response_packet += str(downloader.get_ip)
-                        response_packet += str(downloader.get_port)
-                        encode += "ih"
-                        counter += 1
-                else:
-                    break
-            response_packet = struct.pack(response_packet, "iiii" + encode)
-            socket.sendto(response_packet, (ip, port))
+                    ip = packet[84:88] #Otherwise, I'll send it to the given ip.
+                interval = self.interval
+                response_packet = str(action) + str(transaction_id) + str(interval) + str(leechers) + str(seeders)
+                max_peers = int(packet[92:96])
+                if max_peers == -1:
+                    max_peers = 50
+                counter = 0
+                encode = ""
+                for peer in self.seeder_manager.get_seeders_list():
+                    if counter < max_peers:
+                        if peer.get_info_hash_list().contains(info_hash):
+                            response_packet += str(peer.get_ip)
+                            response_packet += str(peer.get_port)
+                            encode += "ih"
+                            counter += 1
+                for downloader in self.downloaders:
+                    if counter < max_peers:
+                        info = downloader.split("#")
+                        if info.contains(info_hash):
+                            response_packet += str(downloader.get_ip)
+                            response_packet += str(downloader.get_port)
+                            encode += "ih"
+                            counter += 1
+                    else:
+                        break
+                response_packet = struct.pack(response_packet, "iiii" + encode)
+                socket.sendto(response_packet, (ip, port))
+            except:
+                self.error_packet(GENERIC_ERROR_MESSEAGE, transaction_id, client_address, socket)
         elif action == 2:
             transaction_id = packet[12:16]
-            self.error_packet("The tracker doesn't support scraping at the moment.", transaction_id, client_address, socket)
+            self.error_packet(NO_SCRAPE_SUPPORT, transaction_id, client_address, socket)
+        else:
+            transaction_id = packet[12:16]
+            self.error_packet(GENERIC_ERROR_MESSEAGE, transaction_id, client_address, socket)
 
 
 
