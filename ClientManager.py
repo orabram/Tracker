@@ -34,7 +34,7 @@ class ClientManager():
             packet = str(action) + transaction_id + connection_id
             packet = struct.pack(packet, ">iiq")
             socket.sendto(packet, client_address)
-            self.downloaders[str(client_address)] = (str(time.time()) + "#" + str(connection_id) + "#None#None#L")
+            self.downloaders[str(client_address)] = (str(time.time()) + "#" + str(connection_id) + "##L")
         elif action == 1:
             packet = struct.unpack(">qiissqqqiiiih")[0]
             connection_id = packet[:8]
@@ -42,6 +42,11 @@ class ClientManager():
             connection_info = self.downloaders[str(client_address)].split("#")
             if current_time - int(connection_info[0]) < self.interval:
                 if connection_info[1] == connection_id:
+                    info_hash = packet[18:36]
+                    connection_info[-1] == info_hash
+                    connection_info[0] == str(time.time())
+                    connection_info.append("L")
+                    self.downloaders[str(client_address)] = "".join(connection_info)
                     transaction_id = packet[12:16]
                     event = int(packet[80:84])
                     if event == 1:
@@ -54,10 +59,10 @@ class ClientManager():
                         else:
                             seeders += 1
                     port = packet[96:98]
-                    if packet[84:88] == 0:
+                    if packet[84:88] == 0: #If the sent ip is zero, I'll send it back to the sender.
                         ip = client_address
                     else:
-                        ip = packet[84:88]
+                        ip = packet[84:88] #Otherwise, I'll send it to the given ip.
                     interval = self.interval
                     response_packet = str(action) + str(transaction_id) + str(interval) + str(leechers) + str(seeders)
                     max_peers = int(packet[92:96])
@@ -67,12 +72,37 @@ class ClientManager():
                     encode = ""
                     for peer in self.seeder_manager.get_seeders_list():
                         if counter < max_peers:
-                            response_packet += str(peer.get_ip)
-                            response_packet += str(peer.get_port)
-                            encode += "ih"
-                            counter += 1
-                    if counter < max_peers:
-                        for downloader in self.downloaders
+                            if peer.get_info_hash_list().contains(info_hash):
+                                response_packet += str(peer.get_ip)
+                                response_packet += str(peer.get_port)
+                                encode += "ih"
+                                counter += 1
+                    for downloader in self.downloaders:
+                        if counter < max_peers:
+                            info = downloader.split("#")
+                            if info.contains(info_hash):
+                                response_packet += str(downloader.get_ip)
+                                response_packet += str(downloader.get_port)
+                                encode += "ih"
+                                counter += 1
+                        else:
+                            break
+                    response_packet = struct.pack(response_packet, "iiii" + encode)
+                    socket.sendto(response_packet, (ip, port))
+        elif action == 2:
+            transaction_id = packet[12:16]
+
+            self.bad_packet("The tracker doesn't support scraping at the moment.", transaction_id, client_address, socket)
+
+    def bad_packet(self, message, transaction_id, ip, port, socket):
+        action = "0003"
+        packet = action + transaction_id + message
+        packet = struct.pack(packet, "iis")
+        socket.sendto(packet, (ip, port))
+
+
+
+
 
 
 
