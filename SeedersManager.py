@@ -8,7 +8,7 @@ class seeder_communication_manager():
     def __init__(self):
         self.seeders_list = []
 
-    def profile_builer(self, stats):
+    def profile_builder(self, stats):
         stats = stats.split(";")
         cpu_usage = stats[1]
         free_memory = stats[2]
@@ -57,18 +57,18 @@ class seeder_communication_manager():
 
     def remove_files(self, filename):
         for s in self.seeders_list:
-            if s.get_files_list().__contains__(filename):
+            if s.get_files_list().contains(filename):
                 s.remove_file(filename)
 
 
     def mark_as_suspicious(self, filename):
         for s in self.seeders_list:
-            if s.get_files_list().__contains__(filename):
+            if s.get_files_list().contains(filename):
                 s.mark_as_suspicious(filename)
 
     def mark_as_safe(self, filename):
         for s in self.seeders_list:
-            if s.get_files_list().__contains__(filename):
+            if s.get_files_list().contains(filename):
                 s.mark_as_safe(filename)
 
 

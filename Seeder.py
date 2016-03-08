@@ -39,6 +39,9 @@ class Seeder():
         self.files_list.append(filename)
         self.info_hash_list.append(info_hash)
 
+    def modify_files_list(self, files):
+        self.socket.send("files#" + files)
+
     def get_computer_stats(self):
         self.socket.send("profile")
         return self.socket.recv(BUFFER)

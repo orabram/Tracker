@@ -20,7 +20,7 @@ class ClientManager():
         self.downloaders = {}
         self.ip = ip
         self.port = port
-        self.seeder_manager = seeder_manager()
+        self.seeder_manager = seeder_manager
 
     def wait_for_connections(self):
         server_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
