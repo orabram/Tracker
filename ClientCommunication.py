@@ -2,6 +2,7 @@ __author__ = 'Or'
 import struct
 import socket
 import os
+from TrackerCommunicationManager import *
 
 BUFFER = 4098
 PTSR = "BitTorrent protocol"
@@ -37,11 +38,15 @@ class ClientCommunication():
             info_hash = struct.unpack(">20s", handshake[28:48])
             if info_hash == self.info_hash:
                 self.socket.send(HAVE + struct.pack(">i", self.piece_num))
+            else:
+                self.socket.close()
+        else:
+            self.socket.close()
 
     def send_requested_block(self, block_length, piece_num, index):
         script_dir = os.path.dirname(__file__) #<-- absolute dir the script is in
         abs_file_path = os.path.join(script_dir, FILE_LOCATION)
-        f = open(abs_file_path, "r+")
+        f = open(abs_file_path, "rb")
         f.seek(index)
         data = f.read(block_length)
         piece = struct.pack(">ibii" + block_length + "s", (9 + block_length), struct.pack(">i", 7)[0], piece_num, index, data)

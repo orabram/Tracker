@@ -33,15 +33,14 @@ class Seeder():
         self.info_hash_list.remove(info_hash)
 
     def add_new_file(self, filename, chunks, info_hash, piece_num):
-        self.socket.send("add#" + filename)
-        chunks = {chunks:piece_num}
-        self.socket.send(chunks)
+        chunk_size = len(chunks)
+        self.socket.send("add#" + filename + "#" + str(piece_num) + "#" + chunk_size + "#" + info_hash)
+        confirmation = self.socket.recv(BUFFER)
+        if confirmation == "ready":
+            self.socket.send(chunks)
         self.files[filename] = ["safe", info_hash]
         self.files_list.append(filename)
         self.info_hash_list.append(info_hash)
-
-    def modify_files_list(self, files):
-        self.socket.send("files#" + files)
 
     def get_computer_stats(self):
         self.socket.send("profile")

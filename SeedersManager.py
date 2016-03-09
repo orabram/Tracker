@@ -18,13 +18,12 @@ class seeder_communication_manager():
 
     def get_seeders_status(self):
         for s in self.seeders_list:
-            s.modify_files_list(s.files)
             s.set_profile(self.profile_builder(s.get_computer_stats()))
 
     def add_new_seeder(self, ip, port):
         s = socket.socket()
         s.connect((ip, port))
-        seeder = Seeder(ip, port, socket)
+        seeder = Seeder(ip, port, s)
         self.seeders_list.append(seeder)
 
     def remove_seeder(self, ip):

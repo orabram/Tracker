@@ -3,8 +3,7 @@ import random
 import time
 import socket
 import struct
+import psutil
 
-i = 3
-i = struct.pack(">b", i)[0]
-print struct.unpack(">b", i)[0]
-print i
+i = 2.6
+print int(i)
