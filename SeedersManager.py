@@ -39,7 +39,7 @@ class seeder_communication_manager():
     def set_seeders_list(self, list):
         self.seeders_list = list
 
-    def divide_files(self, filename):
+    def divide_files(self, filename, info_hash):
         f = open(filename, "r")
         file = f.read()
         counter = 0
@@ -49,11 +49,11 @@ class seeder_communication_manager():
                 counter += 1
         for s in self.seeders_list:
             if s.get_profile() < 7:
-                if (len(file) / counter) * (counter2 + 1) < 1:
-                    s.add_new_file(file[(len(file) / counter) * counter2:(len(file) / counter) * (counter2 + 1)])
+                if counter2 < counter:
+                    s.add_new_file(filename, file[(len(file) / counter) * counter2:(len(file) / counter) * (counter2 + 1)], info_hash, (counter2 + 1))
                     counter2 += 1
                 else:
-                    s.add_new_file(file[(len(file) / counter) * counter2:])
+                    s.add_new_file(filename, file[(len(file) / counter) * counter2:], info_hash, (counter2 + 1))
 
     def remove_files(self, filename):
         for s in self.seeders_list:

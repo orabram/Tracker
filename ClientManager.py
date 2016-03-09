@@ -65,7 +65,7 @@ class ClientManager():
         return seeders, leechers
 
     def ParseRequest(self, packet, client_address, socket):
-        edited_packet = struct.unpack(">qii", packet)[0]
+        edited_packet = struct.unpack(">qii", packet[:16])[0]
         action = int(packet[8:12])
         if action == 0:
             connection_id = random.randrange(MIN_CONNECTION_ID, MAX_CONNECTION_ID)

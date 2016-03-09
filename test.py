@@ -1,6 +1,10 @@
 __author__ = 'Or'
 import random
 import time
-l = "abc$efg"
-l2 = l.split("$")
-print "".join(l2)
+import socket
+import struct
+
+i = 3
+i = struct.pack(">b", i)[0]
+print struct.unpack(">b", i)[0]
+print i

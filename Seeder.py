@@ -32,8 +32,9 @@ class Seeder():
         self.files_list.remove(filename)
         self.info_hash_list.remove(info_hash)
 
-    def add_new_file(self, filename, chunks, info_hash):
+    def add_new_file(self, filename, chunks, info_hash, piece_num):
         self.socket.send("add#" + filename)
+        chunks = {chunks:piece_num}
         self.socket.send(chunks)
         self.files[filename] = ["safe", info_hash]
         self.files_list.append(filename)
