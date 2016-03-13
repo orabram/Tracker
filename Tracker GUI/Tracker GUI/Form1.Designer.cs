@@ -34,6 +34,9 @@
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
             this.IP = new System.Windows.Forms.TextBox();
             this.Port = new System.Windows.Forms.TextBox();
+            this.IPLabel = new System.Windows.Forms.Label();
+            this.PortLabel = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // SeedersList
@@ -43,7 +46,7 @@
             "a",
             "b",
             "c"});
-            this.SeedersList.Location = new System.Drawing.Point(448, 43);
+            this.SeedersList.Location = new System.Drawing.Point(936, 43);
             this.SeedersList.Name = "SeedersList";
             this.SeedersList.Size = new System.Drawing.Size(332, 381);
             this.SeedersList.TabIndex = 0;
@@ -65,6 +68,7 @@
             this.AddFile.TabIndex = 2;
             this.AddFile.Text = "Browse";
             this.AddFile.UseVisualStyleBackColor = true;
+            this.AddFile.Click += new System.EventHandler(this.AddFile_Click);
             // 
             // IP
             // 
@@ -80,11 +84,42 @@
             this.Port.Size = new System.Drawing.Size(100, 20);
             this.Port.TabIndex = 4;
             // 
+            // IPLabel
+            // 
+            this.IPLabel.AutoSize = true;
+            this.IPLabel.Location = new System.Drawing.Point(59, 59);
+            this.IPLabel.Name = "IPLabel";
+            this.IPLabel.Size = new System.Drawing.Size(20, 13);
+            this.IPLabel.TabIndex = 5;
+            this.IPLabel.Text = "IP:";
+            // 
+            // PortLabel
+            // 
+            this.PortLabel.AutoSize = true;
+            this.PortLabel.Location = new System.Drawing.Point(279, 59);
+            this.PortLabel.Name = "PortLabel";
+            this.PortLabel.Size = new System.Drawing.Size(29, 13);
+            this.PortLabel.TabIndex = 6;
+            this.PortLabel.Text = "Port:";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(202, 275);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(35, 13);
+            this.label1.TabIndex = 7;
+            this.label1.Text = "label1";
+            this.label1.Click += new System.EventHandler(this.label1_Click);
+            // 
             // TrackerGui
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(838, 491);
+            this.ClientSize = new System.Drawing.Size(1271, 469);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.PortLabel);
+            this.Controls.Add(this.IPLabel);
             this.Controls.Add(this.Port);
             this.Controls.Add(this.IP);
             this.Controls.Add(this.AddFile);
@@ -105,6 +140,9 @@
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog1;
         private System.Windows.Forms.TextBox IP;
         private System.Windows.Forms.TextBox Port;
+        private System.Windows.Forms.Label IPLabel;
+        private System.Windows.Forms.Label PortLabel;
+        private System.Windows.Forms.Label label1;
     }
 }
 

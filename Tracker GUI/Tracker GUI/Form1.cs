@@ -16,5 +16,16 @@ namespace Tracker_GUI
         {
             InitializeComponent();
         }
+
+        private void AddFile_Click(object sender, EventArgs e)
+        {
+            
+
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

@@ -1,1 +1,9 @@
 C:\Users\Or\Documents\GitHub\Tracker\Tracker GUI\Tracker GUI\bin\Debug\Tracker GUI.exe.config
+C:\Users\Or\Documents\GitHub\Tracker\Tracker GUI\Tracker GUI\bin\Debug\Tracker GUI.exe
+C:\Users\Or\Documents\GitHub\Tracker\Tracker GUI\Tracker GUI\bin\Debug\Tracker GUI.pdb
+C:\Users\Or\Documents\GitHub\Tracker\Tracker GUI\Tracker GUI\obj\Debug\Tracker GUI.csprojResolveAssemblyReference.cache
+C:\Users\Or\Documents\GitHub\Tracker\Tracker GUI\Tracker GUI\obj\Debug\Tracker_GUI.TrackerGui.resources
+C:\Users\Or\Documents\GitHub\Tracker\Tracker GUI\Tracker GUI\obj\Debug\Tracker_GUI.Properties.Resources.resources
+C:\Users\Or\Documents\GitHub\Tracker\Tracker GUI\Tracker GUI\obj\Debug\Tracker GUI.csproj.GenerateResource.Cache
+C:\Users\Or\Documents\GitHub\Tracker\Tracker GUI\Tracker GUI\obj\Debug\Tracker GUI.exe
+C:\Users\Or\Documents\GitHub\Tracker\Tracker GUI\Tracker GUI\obj\Debug\Tracker GUI.pdb
