@@ -4,7 +4,7 @@ import socket
 from SeedersManager import *
 
 IP = "127.0.0.1"
-PORT = 6666
+PORT = 5555
 GUI_PORT = 6666
 BUFFER = 4096
 
@@ -13,7 +13,6 @@ class gui_manager():
         self.port = PORT
         self.ip = IP
         self.manager = seeders_manager
-        self.gui = ""
 
     def establish_connection(self):
         gui = socket.socket()
