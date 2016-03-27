@@ -25,7 +25,7 @@ class gui_manager():
 
     def get_new_commands(self):
         command = self.gui.recv(BUFFER)
-        command = command.split(" ")
+        command = command.split("#")
         if command[0] == "adds":
             self.manager.add_new_seeder(command[1], command[2])
         elif command[0] == "removes":
