@@ -16,6 +16,10 @@ namespace Tracker_GUI
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+            /*Process p = new Process();
+            p.StartInfo.FileName = "cmd.exe";
+            p.StartInfo.Arguments = @"/C C:\Python27\python.exe " + Application.StartupPath + @"\server.py";
+            p.Start(); // Starts the python program*/
             Application.Run(new TrackerGui());
         }
     }
