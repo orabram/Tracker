@@ -58,7 +58,8 @@ class seeder_communication_manager():
     def build_meta_file(self, pieces):
         port = TRACKER_PORT.__str__()
         ip = [ip for ip in socket.gethostbyname_ex(socket.gethostname())[2] if not ip.startswith("127.")][:1][0]
-        url_address = 
+        url_address = "http://" + ip + ":" + port
+        
 
 
     def remove_files(self, filename):
