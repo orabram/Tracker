@@ -5,6 +5,6 @@ import socket
 import struct
 import bencode
 
-l = [1,2,3,4,5,6]
-p = bencode.bencode(l)
-print p
+num = 3
+print type (num.__str__())
+print num.__str__()

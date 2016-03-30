@@ -5,6 +5,7 @@ from GUIManager import *
 import socket
 import struct
 from multiprocessing import Process
+import os
 
 SELF_IP = "0.0.0.0"
 TRACKER_PORT = 3456

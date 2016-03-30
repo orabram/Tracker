@@ -2,7 +2,7 @@ __author__ = 'Or'
 
 from Seeder import *
 from multiprocessing import Process
-
+from Tracker import *
 
 class seeder_communication_manager():
     def __init__(self):
@@ -43,6 +43,7 @@ class seeder_communication_manager():
         file = f.read()
         counter = 0
         counter2 = 0
+        piece_len = 0
         for s in self.seeders_list:
             if s.get_profile() < 7:
                 counter += 1
@@ -53,6 +54,12 @@ class seeder_communication_manager():
                     counter2 += 1
                 else:
                     s.add_new_file(filename, file[(len(file) / counter) * counter2:], info_hash, (counter2 + 1))
+
+    def build_meta_file(self, pieces):
+        port = TRACKER_PORT.__str__()
+        ip = [ip for ip in socket.gethostbyname_ex(socket.gethostname())[2] if not ip.startswith("127.")][:1][0]
+        url_address = 
+
 
     def remove_files(self, filename):
         for s in self.seeders_list:
