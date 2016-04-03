@@ -12,16 +12,31 @@ using System.Text;
 public class SocketClient
 {
     private Socket clientsocket;
+    private TcpListener serverSocket;
+    private TcpClient clientSocket;
     private byte[] buffer = new byte[4096]; // The amount of data
 
     public SocketClient()
     {
-        TcpListener serverSocket = new TcpListener(IPAddress.Parse("0.0.0.0"), 6666);
-        TcpClient clientSocket = default(TcpClient);
+        serverSocket = new TcpListener(IPAddress.Parse("0.0.0.0"), 6666);
+        clientSocket = default(TcpClient);
+    }
+
+    public bool Connect()
+    {
         serverSocket.Start();
-        clientSocket = serverSocket.AcceptTcpClient();
-        serverSocket.Stop();
-        this.clientsocket = clientSocket.Client;
+        try
+        {
+            clientSocket = serverSocket.AcceptTcpClient();
+            serverSocket.Stop();
+            this.clientsocket = clientSocket.Client;
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+
     }
 
     private byte[] Encode(string message) // Turning the message from string to byte[] to send it through the socket.

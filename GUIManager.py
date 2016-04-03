@@ -31,7 +31,8 @@ class gui_manager():
         elif command[0] == "removes":
             self.manager.remove_seeder(command[1])
         elif command[0] == "addf":
-            self.manager.divide_files(command[1], command[2])
+            error_message = self.manager.divide_files(command[1])
+            self.gui.send(error_message)
         elif command[0] == "removef":
             self.manager.remove_files(command[1])
         elif command[0] == "mark":

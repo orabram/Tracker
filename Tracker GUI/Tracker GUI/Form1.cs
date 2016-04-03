@@ -18,7 +18,8 @@ namespace Tracker_GUI
         public TrackerGui()
         {
             InitializeComponent();
-            SocketClient socket = new SocketClient();
+            SocketClient socket = GlobalVariables.GetSocket();
+            socket.Connect();
             Thread update_seeders_list = new Thread(new ParameterizedThreadStart(RecvSeedersList));
             update_seeders_list.Start(socket);
             
@@ -82,7 +83,8 @@ namespace Tracker_GUI
             {
                 ErrorBox.Text = "The Port you've entered is invalid.";
             }
-            string message = "adds#" + IP.Text + Port.Text;
+            string message = "adds#" + IP.Text + "#" + Port.Text;
+            GlobalVariables.GetSocket().Send(message);
             
         }
 
@@ -93,7 +95,16 @@ namespace Tracker_GUI
 
         private void SendFile_Click(object sender, EventArgs e)
         {
-
+            if (FileLocation.Text == "")
+            {
+                ErrorBox.Text = "The location you've entered is invalid.";
+            }
+            else
+            {
+                string message = "addf" + "#" + FileLocation.Text;
+                GlobalVariables.GetSocket().Send(message);
+                ErrorBox.Text = GlobalVariables.GetSocket().Recv();
+            }
         }
     }
 }

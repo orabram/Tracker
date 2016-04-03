@@ -38,8 +38,11 @@ class seeder_communication_manager():
     def set_seeders_list(self, list):
         self.seeders_list = list
 
-    def divide_files(self, filename, info_hash):
-        f = open(filename, "r")
+    def divide_files(self, path): #need to add info_hash calculation
+        try:
+            f = open(path, "r")
+        except:
+            return "The path you've entered is incorrect."
         file = f.read()
         counter = 0
         counter2 = 0
@@ -54,6 +57,8 @@ class seeder_communication_manager():
                     counter2 += 1
                 else:
                     s.add_new_file(filename, file[(len(file) / counter) * counter2:], info_hash, (counter2 + 1))
+        self.build_meta_file(counter2)
+        return "The file has been added."
 
     def build_meta_file(self, pieces):
         port = TRACKER_PORT.__str__()

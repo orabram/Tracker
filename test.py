@@ -1,10 +1,3 @@
-__author__ = 'Or'
-import random
-import time
-import socket
-import struct
-import bencode
-
-num = 3
-print type (num.__str__())
-print num.__str__()
+import os
+f = open("C:\Users\Or\Downloads/123.txt", "r")
+print f.read()

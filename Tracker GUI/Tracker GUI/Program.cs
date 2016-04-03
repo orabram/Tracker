@@ -18,7 +18,7 @@ namespace Tracker_GUI
             Application.SetCompatibleTextRenderingDefault(false);
             /*Process p = new Process();
             p.StartInfo.FileName = "cmd.exe";
-            p.StartInfo.Arguments = @"/C C:\Python27\python.exe " + Application.StartupPath + @"\server.py";
+            p.StartInfo.Arguments = @"/C C:\Python27\python.exe " + Application.StartupPath + @"\Tracker.py";
             p.Start(); // Starts the python program*/
             Application.Run(new TrackerGui());
         }
