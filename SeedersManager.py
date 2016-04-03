@@ -57,13 +57,17 @@ class seeder_communication_manager():
                     counter2 += 1
                 else:
                     s.add_new_file(filename, file[(len(file) / counter) * counter2:], info_hash, (counter2 + 1))
-        self.build_meta_file(counter2)
+        self.build_meta_file(counter2, path, len(file))
         return "The file has been added."
 
-    def build_meta_file(self, pieces):
+    def build_meta_file(self, pieces, path, file_length):
         port = TRACKER_PORT.__str__()
         ip = [ip for ip in socket.gethostbyname_ex(socket.gethostname())[2] if not ip.startswith("127.")][:1][0]
         url_address = "http://" + ip + ":" + port
+        filename = path.split("\\")[-1]
+        info = {}
+
+
         
 
 

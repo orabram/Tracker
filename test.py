@@ -1,3 +1,3 @@
 import os
-f = open("C:\Users\Or\Downloads/123.txt", "r")
-print f.read()
+f = "D:\\users\\190\\Downloads\\123.txt".split("\\")[-1]
+print f
