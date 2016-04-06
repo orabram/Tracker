@@ -15,16 +15,67 @@ namespace Tracker_GUI
 {
     public partial class TrackerGui : Form
     {
+        delegate void SetTextCallback(string text);
+
         public TrackerGui()
         {
             InitializeComponent();
             SocketClient socket = GlobalVariables.GetSocket();
             socket.Connect();
-            Thread update_seeders_list = new Thread(new ParameterizedThreadStart(RecvSeedersList));
-            update_seeders_list.Start(socket);
-            
+            /*Thread update_seeders_list = new Thread(RecvSeedersList);
+            update_seeders_list.Start();*/
+        }
+        
+        public bool CheckIP()
+        {
+            if (IP.Text.Split('.').Length != 4)
+            {
+                ErrorBox.Text = "The IP address is invalid.";
+                return false;
+            }
+            else if (Port.Text.Length > 5)
+            {
+                ErrorBox.Text = "The Port you've entered is invalid.";
+                return false;
+            }
+            return true;
+        }
+
+        private void SetText(string text)
+        {
+            // InvokeRequired required compares the thread ID of the
+            // calling thread to the thread ID of the creating thread.
+            // If these threads are different, it returns true.
+            if (this.ErrorBox.InvokeRequired)
+            {
+                SetTextCallback d = new SetTextCallback(SetText);
+                this.Invoke(d, new object[] { text });
+            }
+            else
+            {
+                this.ErrorBox.Text = text;
+            }
+        }
 
 
+        public void MessageParse(string message)
+        {
+            string[] temp = message.Split('#');
+            if (temp[0] == "list")
+            {
+                for (int i = 1; i < temp.Length; i++)
+                {
+                    SeedersList.Items.Add(temp[i]);
+                }
+            }
+            else if (temp[0] == "info")
+            {
+                SeederData.Text = temp[1];
+            }
+            else
+            {
+                SetText(temp[1]);
+            }
         }
 
         private void AddFile_Click(object sender, EventArgs e)
@@ -52,45 +103,35 @@ namespace Tracker_GUI
             if ((string)SeedersList.SelectedItem == "2")
                 FileLocation.Text = ((string)SeedersList.SelectedItem);
         }
-        public void RecvSeedersList(object oldsocket)
+        /*public void RecvSeedersList()
         {
-            SocketClient socket = (SocketClient)oldsocket;
+            SocketClient socket = GlobalVariables.GetSocket();
             while (true)
             {
                 string command = socket.Recv();
-                string[] temp = command.Split('#');
-                if (temp[0] == "list")
-                {
-                    for (int i = 1; i < temp.Length; i++)
-                    {
-                        SeedersList.Items.Add(temp[i]);
-                    }
-                }
-                else if (temp[0] == "info")
-                {
-                    SeederData.Text = temp[1];
-                }
+                MessageParse(command);
             }
         }
-
+        */
         private void AddSeeder_Click(object sender, EventArgs e)
         {
-            if(IP.Text.Split('.').Length != 4)
+            if (CheckIP())
             {
-                ErrorBox.Text = "The IP address is invalid.";
+                string message = "adds#" + IP.Text + "#" + Port.Text;
+                GlobalVariables.GetSocket().Send(message);
             }
-            else if(Port.Text.Length > 5)
-            {
-                ErrorBox.Text = "The Port you've entered is invalid.";
-            }
-            string message = "adds#" + IP.Text + "#" + Port.Text;
-            GlobalVariables.GetSocket().Send(message);
             
         }
 
         private void RemoveSeeder_Click(object sender, EventArgs e)
         {
-
+            if (CheckIP())
+            {
+                string message = "removes#" + IP.Text;
+                GlobalVariables.GetSocket().Send(message);
+                message = GlobalVariables.GetSocket().Recv();
+                MessageParse(message);
+            }
         }
 
         private void SendFile_Click(object sender, EventArgs e)
@@ -103,7 +144,23 @@ namespace Tracker_GUI
             {
                 string message = "addf" + "#" + FileLocation.Text;
                 GlobalVariables.GetSocket().Send(message);
-                ErrorBox.Text = GlobalVariables.GetSocket().Recv();
+                message = GlobalVariables.GetSocket().Recv();
+                MessageParse(message);
+            }
+        }
+
+        private void RemoveFile_Click(object sender, EventArgs e)
+        {
+            if (FileLocation.Text == "")
+            {
+                ErrorBox.Text = "The location you've entered is invalid.";
+            }
+            else
+            {
+                string message = "removef" + "#" + FileLocation.Text;
+                GlobalVariables.GetSocket().Send(message);
+                message = GlobalVariables.GetSocket().Recv();
+                MessageParse(message);
             }
         }
     }

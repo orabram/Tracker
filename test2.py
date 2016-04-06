@@ -1,3 +1,4 @@
 __author__ = 'Or'
-import socket
-print[ip for ip in socket.gethostbyname_ex(socket.gethostname())[2] if not ip.startswith("127.")][:1][0]
+from SeedersManager import *
+sm = seeder_communication_manager()
+print sm.divide_files("C:\\Users\\Or\\Downloads\\Austin Powers - International Man of Mystery (1997)\\Austin.Powers.International.Man.of.Mystery.1997.720p.Brrip.x264.Deceit.YIFY.mp4")

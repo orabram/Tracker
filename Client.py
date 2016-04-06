@@ -19,14 +19,15 @@ def connect_to_tracker(tracker_communicator):
     while tracker_communicator.is_connected():
         tracker_communicator.parse_information()
 
-def manage_downloads():
+def manage_downloads(tracker_communicator):
     s = socket.socket()
     s.bind((IP, PORT))
     s.listen(5)
     while True:
         (peer_socket, peer_address) = s.accept()
-        peer_communicator = ClientCommunication(peer_socket)
+        peer_communicator = ClientCommunication(peer_socket, tracker_communicator)
         p = Process(target=ClientCommunication.manage_download)
+        p.start()
 
 tracker_communicator = TrackerCommunicationManager()
 start_processes(tracker_communicator)

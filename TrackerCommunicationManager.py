@@ -2,6 +2,7 @@ __author__ = 'Or'
 import socket
 import psutil
 import os
+import math
 
 SELF_IP = "0.0.0.0"
 SELF_PORT = 4206
@@ -10,7 +11,7 @@ FILES_LOCATION = "will_be_decided_later"
 
 class TrackerCommunicationManager():
     def __init__(self):
-        self.peer_id = "-OC000166666666666666-" # OC stands for Or's Client, 0001 represents the version number(0.1) and the 6's are just random.
+        self.peer_id = "-OC000266666666666666-" # OC stands for Or's Client, 0002 represents the version number(0.2) and the 6's are just random.
         self.files = {}
         self.is_connected = False
 
@@ -37,15 +38,17 @@ class TrackerCommunicationManager():
         self.tracker_socket.send(cpu_usage, memory_usage, speed)
 
     def download_piece(self, filename, piece_num, size, info_hash):
-        f = open(filename, "wb")
+        f = open(filename + ".txt", "rb+")
         self.tracker_socket.send("ready")
-        counter = int(size / BUFFER)
+        counter = int(math.ceil(size / BUFFER))
         data = ""
         for i in xrange(counter):
             data += self.tracker_socket.recv(BUFFER)
         data += self.tracker_socket.recv(BUFFER)
+        file_offset = size * (piece_num - 1)
+        f.seek(file_offset)
         f.write(data)
-        self.files[filename] = ["safe", piece_num, info_hash]
+        self.files[filename] = ["safe", piece_num, info_hash, size]
 
     def remove_piece(self, filename):
         script_dir = os.path.dirname(filename)
@@ -66,9 +69,9 @@ class TrackerCommunicationManager():
         elif packet[0] == "add":
             filename = packet[1]
             piece_num = packet[2]
-            size = packet[3]
+            piece_size = packet[3]
             info_hash = packet[4]
-            self.download_piece(filename, piece_num, size, info_hash)
+            self.download_piece(filename, piece_num, piece_size, info_hash)
         elif packet[0] == "remove":
             self.remove_piece(packet[1])
         elif packet[0] == "mark":
@@ -95,6 +98,9 @@ class TrackerCommunicationManager():
 
     def is_connected(self):
         return self.is_connected
+
+    def get_files(self):
+        return self.files
 
 
 

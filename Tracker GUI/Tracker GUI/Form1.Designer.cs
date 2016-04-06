@@ -42,6 +42,8 @@
             this.label1 = new System.Windows.Forms.Label();
             this.RemoveSeeder = new System.Windows.Forms.Button();
             this.ErrorBox = new System.Windows.Forms.RichTextBox();
+            this.Mark = new System.Windows.Forms.Button();
+            this.RemoveFile = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // SeedersList
@@ -160,11 +162,32 @@
             this.ErrorBox.TabIndex = 12;
             this.ErrorBox.Text = "";
             // 
+            // Mark
+            // 
+            this.Mark.Location = new System.Drawing.Point(193, 321);
+            this.Mark.Name = "Mark";
+            this.Mark.Size = new System.Drawing.Size(75, 23);
+            this.Mark.TabIndex = 13;
+            this.Mark.Text = "Encrypt";
+            this.Mark.UseVisualStyleBackColor = true;
+            // 
+            // RemoveFile
+            // 
+            this.RemoveFile.Location = new System.Drawing.Point(193, 371);
+            this.RemoveFile.Name = "RemoveFile";
+            this.RemoveFile.Size = new System.Drawing.Size(75, 23);
+            this.RemoveFile.TabIndex = 14;
+            this.RemoveFile.Text = "Remove";
+            this.RemoveFile.UseVisualStyleBackColor = true;
+            this.RemoveFile.Click += new System.EventHandler(this.RemoveFile_Click);
+            // 
             // TrackerGui
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1271, 469);
+            this.Controls.Add(this.RemoveFile);
+            this.Controls.Add(this.Mark);
             this.Controls.Add(this.ErrorBox);
             this.Controls.Add(this.RemoveSeeder);
             this.Controls.Add(this.label1);
@@ -201,6 +224,8 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button RemoveSeeder;
         private System.Windows.Forms.RichTextBox ErrorBox;
+        private System.Windows.Forms.Button Mark;
+        private System.Windows.Forms.Button RemoveFile;
     }
 }
 

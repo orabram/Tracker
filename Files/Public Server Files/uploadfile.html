@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Upload files</title>
+<p><u><strong><em>Upload a file</em></strong></u></p>
+<p><!oh hey mark></p>
+</head>
+<body>
+<br>
+<a href="/">Homepage</a>
+<br>
+<a href="/getfile">Download a file</a>
+<br>
+<a href="/delfile">Delete a file</a>
+<br>
+<form action="/uploadfile"
+enctype="multipart/form-data" method="post">
+<p>
+File name:<br>
+<input type="text" name="name" size="30">
+</p>
+<p>
+Password:<br>
+<input type="password" name="password" size="30">
+</p>
+<p>
+Please specify a file:<br>
+<input type="file" name="file" size="40">
+</p>
+<div>
+<input type="submit" value="Submit">
+</div>
+</form>
+</body>
+</html>

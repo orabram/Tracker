@@ -28,13 +28,12 @@ class Seeder():
         self.socket.send("remove#" + filename)
         info_hash = self.files[filename][1]
         self.files.pop(filename)
-        #os.remove(os.path.abspath(filename))
+        os.remove(os.path.abspath(filename))
         self.files_list.remove(filename)
         self.info_hash_list.remove(info_hash)
 
-    def add_new_file(self, filename, chunks, info_hash, piece_num):
-        chunk_size = len(chunks)
-        self.socket.send("add#" + filename + "#" + str(piece_num) + "#" + chunk_size + "#" + info_hash)
+    def add_new_file(self, filename, chunks, info_hash, piece_num, piece_length):
+        self.socket.send("add#" + filename + "#" + str(piece_num) + "#" + str(piece_length) + "#" + info_hash)
         confirmation = self.socket.recv(BUFFER)
         if confirmation == "ready":
             self.socket.send(chunks)

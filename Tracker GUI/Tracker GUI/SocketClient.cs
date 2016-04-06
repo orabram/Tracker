@@ -6,9 +6,7 @@ using System.Net.Sockets;
 using System.Net;
 using System.Text;
 
-/// <summary>
-/// Summary description for Proxy
-/// </summary>
+
 public class SocketClient
 {
     private Socket clientsocket;

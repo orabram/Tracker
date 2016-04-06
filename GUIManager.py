@@ -10,14 +10,12 @@ BUFFER = 4096
 
 class gui_manager():
     def __init__(self, seeders_manager):
-        self.port = PORT
-        self.ip = IP
         self.manager = seeders_manager
 
     def establish_connection(self):
         gui = socket.socket()
-        gui.bind((IP, GUI_PORT))
-        gui.connect((self.ip, self.port))
+        gui.bind((IP, PORT))
+        gui.connect((IP, GUI_PORT))
         self.gui = gui
 
     def send_computers_list(self):
@@ -29,10 +27,11 @@ class gui_manager():
         if command[0] == "adds":
             self.manager.add_new_seeder(command[1], command[2])
         elif command[0] == "removes":
-            self.manager.remove_seeder(command[1])
+            error_message = self.manager.remove_seeder(command[1])
+            self.gui.send("rs#" + error_message)
         elif command[0] == "addf":
             error_message = self.manager.divide_files(command[1])
-            self.gui.send(error_message)
+            self.gui.send("af#" + error_message)
         elif command[0] == "removef":
             self.manager.remove_files(command[1])
         elif command[0] == "mark":

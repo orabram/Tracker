@@ -13,21 +13,16 @@ UNCHOKE = struct.pack(">ib", 1, struct.pack(">b", 1)[0])
 INTERESTED = struct.pack(">ib", 1, struct.pack(">b", 2)[0])
 NOT_INTERESTED = struct.pack(">ib", 1, struct.pack(">b", 3)[0])
 HAVE = struct.pack(">ib", 5, struct.pack(">b", 4)[0])
-FILE_LOCATION = "ccc" # will be decided later
+FILE_LOCATION = os.path.dirname(os.path.abspath(__file__)) + '\\Files\\Storage'
 
 class ClientCommunication():
-    def __init__(self, socket, file, info_hash, piece_length, piece_num):
+    def __init__(self, socket, tcm):
         self.socket = socket
-        self.file = file #contains the chunks of the file
-        self.info_hash = info_hash #contains the info_hash of the file
-        self.buffer = piece_length
+        self.files = tcm.get_files() #contains the chunks of the file
         self.am_choking = True
         self.am_interested = False
         self.peer_choking = True
         self.peer_interested = False
-        self.piece_num = piece_num
-        self.piece_length = piece_length
-        self.done = False
 
     def handshake(self):
         handshake = self.socket.recv(BUFFER)
@@ -36,8 +31,9 @@ class ClientCommunication():
         ptsrlen, ptsr = struct.unpack(">b19s", handshake[:20])
         if ptsrlen == PTSRLEN and PTSR == ptsr:
             info_hash = struct.unpack(">20s", handshake[28:48])
-            if info_hash == self.info_hash:
-                self.socket.send(HAVE + struct.pack(">i", self.piece_num))
+            for file in self.files:
+                if info_hash == self.files[file][3]:
+                    self.socket.send(HAVE + struct.pack(">i", self.files[file][2]))
             else:
                 self.socket.close()
         else:
@@ -46,10 +42,10 @@ class ClientCommunication():
     def send_requested_block(self, block_length, piece_num, index):
         script_dir = os.path.dirname(__file__) #<-- absolute dir the script is in
         abs_file_path = os.path.join(script_dir, FILE_LOCATION)
-        f = open(abs_file_path, "rb")
+        f = open(abs_file_path, "rb+")
         f.seek(index)
         data = f.read(block_length)
-        piece = struct.pack(">ibii" + block_length + "s", (9 + block_length), struct.pack(">i", 7)[0], piece_num, index, data)
+        piece = struct.pack(">ibii" + str(block_length) + "s", (9 + block_length), struct.pack(">i", 7)[0], piece_num, index, data)
         self.socket.send(piece)
 
     def manage_download(self):
