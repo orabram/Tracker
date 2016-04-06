@@ -28,9 +28,9 @@ class ClientCommunication():
         handshake = self.socket.recv(BUFFER)
         if len(handshake) < 49:
             self.socket.close()
-        ptsrlen, ptsr = struct.unpack(">b19s", handshake[:20])
+        ptsrlen, ptsr = struct.unpack(">b19s", handshake[:20])[0]
         if ptsrlen == PTSRLEN and PTSR == ptsr:
-            info_hash = struct.unpack(">20s", handshake[28:48])
+            info_hash = struct.unpack(">20s", handshake[28:48][0])
             for file in self.files:
                 if info_hash == self.files[file][3]:
                     self.socket.send(HAVE + struct.pack(">i", self.files[file][2]))
