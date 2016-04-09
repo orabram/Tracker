@@ -23,6 +23,7 @@ class ClientCommunication():
         self.am_interested = False
         self.peer_choking = True
         self.peer_interested = False
+        self.done = False
 
     def handshake(self):
         handshake = self.socket.recv(BUFFER)
@@ -34,10 +35,12 @@ class ClientCommunication():
             for file in self.files:
                 if info_hash == self.files[file][3]:
                     self.socket.send(HAVE + struct.pack(">i", self.files[file][2]))
+                    return file
             else:
                 self.socket.close()
         else:
             self.socket.close()
+        return False
 
     def send_requested_block(self, block_length, piece_num, index):
         script_dir = os.path.dirname(__file__) #<-- absolute dir the script is in
@@ -50,21 +53,28 @@ class ClientCommunication():
 
     def manage_download(self):
         self.socket.settimeout(2)
-        self.handshake()
-        self.socket.send(UNCHOKE)
-        self.am_choking = False
-        while self.done == False:
-            packet = self.socket.recv(BUFFER)
-            id = struct.unpack(">b", packet[5])[0]
-            if id == 6 and len(packet) == 13:
-                piece_num, index, length = struct.unpack(">iii", packet[5:12])[0]
-                if piece_num == self.piece_num:
-                    self.send_requested_block(length, piece_num, index)
-            elif id == 4 and len(packet) == 5:
-                piece_num = struct.unpack(">i", packet[4])[0]
-                if piece_num == self.piece_num:
-                    self.done = True
+        file = self.handshake()
+        if file != False:
+            self.socket.send(UNCHOKE)
+            self.am_choking = False
+            while self.done == False:
+                packet = self.socket.recv(BUFFER)
+                id = struct.unpack(">b", packet[5])[0]
+                if id == 6 and len(packet) == 13:
+                    piece_num, index, length = struct.unpack(">iii", packet[5:12])[0]
+                    if self.have_piece(file, piece_num):
+                        self.send_requested_block(length, piece_num, index)
+                elif id == 4 and len(packet) == 5:
+                    piece_num = struct.unpack(">i", packet[4])[0]
+                    if self.have_piece(file, piece_num):
+                        self.done = True
 
+    def have_piece(self, tfile, piece_num):
+        for file in self.files:
+            if file == tfile:
+                if self.files[1] == piece_num:
+                    return True
+        return False
 
 
 
