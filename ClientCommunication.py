@@ -73,6 +73,8 @@ class ClientCommunication():
                     piece_num = struct.unpack(">i", packet[4])[0]
                     if self.have_piece(file, piece_num):
                         self.done = True
+        else:
+            print "the file doesn't exist"
 
     def have_piece(self, tfile, piece_num):
         for file in self.files:
