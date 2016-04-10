@@ -4,8 +4,8 @@ import psutil
 import os
 import math
 
-SELF_IP = "0.0.0.0"
-SELF_PORT = 4206
+SELF_IP = "127.0.0.1"
+SELF_PORT = 5789
 BUFFER = 16384
 FILES_LOCATION = "will_be_decided_later"
 
@@ -18,7 +18,7 @@ class TrackerCommunicationManager():
     def connect_to_tracker(self):
         server = socket.socket()
         server.bind((SELF_IP, SELF_PORT))
-        server.listen(1)
+        server.listen(5)
         (self.tracker_socket, tracker_address) = server.accept()
         print "connected"
         self.is_connected = True

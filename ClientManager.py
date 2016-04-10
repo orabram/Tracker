@@ -52,8 +52,8 @@ class ClientManager():
         socket.sendto(packet,client_address)
 
     def update_seeder(self, info_hash, connection_info, event, client_address):
-        connection_info[-1] == info_hash + "#"
-        connection_info[0] == str(time.time()) + "#"
+        connection_info[-1] = info_hash + "#"
+        connection_info[0] = str(time.time()) + "#"
         status = "L"
         if event == 1:
             status = "S"

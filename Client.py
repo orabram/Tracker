@@ -11,8 +11,7 @@ PORT = 6881
 def start_processes(tracker_communicator):
     p = Process(target=connect_to_tracker, args=[tracker_communicator])
     p.start()
-    p = Process(target=manage_downloads, args=[tracker_communicator])
-    p.start()
+    #manage_downloads(tracker_communicator)
 
 def connect_to_tracker(tracker_communicator):
     tracker_communicator.connect_to_tracker()
