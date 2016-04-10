@@ -68,14 +68,16 @@ class seeder_communication_manager():
             if s.get_profile() > 30:
                 counter += 1
         file_length = os.stat(path).st_size
-        try:
+        """try:
             piece_length = int(math.ceil(file_length / counter))
         except:
             return "There are no optional seeders right now."
         true_counter = counter + 1
         if piece_length > MAX_PIECE_LENGTH:
             while int(math.ceil(file_length / counter)) > MAX_PIECE_LENGTH:
-                true_counter += 1
+                true_counter += 1"""
+        counter = 20
+        piece_length = 1048745
         while counter2 < counter:
             piece = file[(file_length / counter) * counter2:(file_length / counter) * (counter2 + 1)]
             pieces.append(piece)
@@ -85,9 +87,9 @@ class seeder_communication_manager():
         pieces.append(piece)
         pieces_hash.append(self.hash_piece(piece))
         info_hash = self.build_meta_file(counter, path, file_length, piece_length, pieces_hash)
-        for j in xrange(true_counter/ counter):
+        """for j in xrange(true_counter/ counter):
             for i in xrange(counter):
-                self.seeders_list[i].add_new_file(filename, pieces[i], info_hash, (i*j + i + 1), piece_length)
+                self.seeders_list[i].add_new_file(filename, pieces[i], info_hash, (i*j + i + 1), piece_length)"""
         return "The file has been added."
 
     def build_meta_file(self, pieces, path, file_length, piece_length, pieces_hash):
@@ -96,7 +98,7 @@ class seeder_communication_manager():
         announce = "udp://" + ip + ":" + port
         filename = path.split("\\")[-1]
         filename = filename.split(".")[0] + ".torrent"
-        info = {"name" : filename, "piece length": piece_length, "length": file_length, "pieces" :pieces_hash }
+        info = {"name" : filename, "piece length": piece_length, "length": file_length, "pieces": pieces_hash }
         file = {"announce" : announce, "info" : info}
         MemoryHandler.save_file(filename, bencode.bencode(file))
         return self.hash_piece(bencode.bencode(info))

@@ -2,7 +2,6 @@
 # Name: memory handler
 # Version:1.1
 # By: Or Abramovich
-#     Yaniv Sharon
 #endregion -------------Info------------
 
 #region -------------Imports---------
