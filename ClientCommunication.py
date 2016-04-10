@@ -8,11 +8,16 @@ BUFFER = 4098
 PTSR = "BitTorrent protocol"
 PTSRLEN = len(PTSR)
 KEEP_ALIVE = struct.pack(">i", 0)
-CHOKE = struct.pack(">ib", 1, struct.pack(">b", 0)[0])
-UNCHOKE = struct.pack(">ib", 1, struct.pack(">b", 1)[0])
-INTERESTED = struct.pack(">ib", 1, struct.pack(">b", 2)[0])
-NOT_INTERESTED = struct.pack(">ib", 1, struct.pack(">b", 3)[0])
-HAVE = struct.pack(">ib", 5, struct.pack(">b", 4)[0])
+CHOKE = struct.pack(">bb", 1, 0)
+UNCHOKE = struct.pack(">bb", 1, 1)
+INTERESTED = struct.pack(">bb", 1, 2)
+NOT_INTERESTED = struct.pack(">bb", 1, 3)
+HAVE = struct.pack(">bb", 5, 4)
+#CHOKE = struct.pack(">ib", 1, struct.pack(">b", 0)[0])
+#UNCHOKE = struct.pack(">ib", 1, struct.pack(">b", 1)[0])
+#INTERESTED = struct.pack(">ib", 1, struct.pack(">b", 2)[0])
+#NOT_INTERESTED = struct.pack(">ib", 1, struct.pack(">b", 3)[0])
+#HAVE = struct.pack(">ib", 5, struct.pack(">b", 4)[0])
 FILE_LOCATION = os.path.dirname(os.path.abspath(__file__)) + '\\Files\\Storage'
 
 class ClientCommunication():

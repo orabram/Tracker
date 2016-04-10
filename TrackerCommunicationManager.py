@@ -20,6 +20,7 @@ class TrackerCommunicationManager():
         server.bind((SELF_IP, SELF_PORT))
         server.listen(1)
         (self.tracker_socket, tracker_address) = server.accept()
+        print "connected"
         self.is_connected = True
 
     def send_computer_stats(self):
