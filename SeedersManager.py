@@ -8,9 +8,10 @@ import MemoryHandler
 import bencode
 from Crypto.Hash import SHA
 import math
+import struct
 
 TRACKER_PORT = 3456
-MAX_PIECE_LENGTH = 4000000 # the maximum piece size is 4mb, or 4000000 bytes.
+PIECE_LENGTH = 262144 # the maximum piece size is 4mb, or 4000000 bytes.
 
 class seeder_communication_manager():
     def __init__(self):
@@ -50,24 +51,27 @@ class seeder_communication_manager():
 
     def hash_piece(self, piece):
         sha = SHA.new(piece)
-        piece = sha.hexdigest()
+        piece = sha.digest()
         return piece
 
     def divide_files(self, path): #need to add info_hash calculation
         try:
-            f = open(path, "r")
+            file = open(path, "rb")
         except:
             return "The path you've entered is incorrect."
-        file = f.read()
         filename = path.split("\\")[-1]
         counter = 0
-        counter2 = 0
+        seeders = []
         pieces = []
-        pieces_hash = []
+        pieces_hash = ""
+        data = ""
         for s in self.seeders_list:
             if s.get_profile() > 30:
-                counter += 1
+                seeders.append(s)
         file_length = os.stat(path).st_size
+        print file_length
+        file_length = int(os.stat(path).st_size)
+        print file_length
         """try:
             piece_length = int(math.ceil(file_length / counter))
         except:
@@ -76,31 +80,39 @@ class seeder_communication_manager():
         if piece_length > MAX_PIECE_LENGTH:
             while int(math.ceil(file_length / counter)) > MAX_PIECE_LENGTH:
                 true_counter += 1"""
-        counter = 20
-        piece_length = 1048745
-        while counter2 < counter:
-            piece = file[(file_length / counter) * counter2:(file_length / counter) * (counter2 + 1)]
-            pieces.append(piece)
-            pieces_hash.append(self.hash_piece(piece))
-            counter2 += 1
-        piece = file[(file_length / counter) * counter2:]
-        pieces.append(piece)
-        pieces_hash.append(self.hash_piece(piece))
-        info_hash = self.build_meta_file(counter, path, file_length, piece_length, pieces_hash)
-        """for j in xrange(true_counter/ counter):
-            for i in xrange(counter):
-                self.seeders_list[i].add_new_file(filename, pieces[i], info_hash, (i*j + i + 1), piece_length)"""
+        while True:
+            filedata = file.read(PIECE_LENGTH)
+            if len(filedata) == 0:
+                break
+            data += filedata
+            if len(data) >= PIECE_LENGTH:
+                pieces_hash += self.hash_piece(data[:PIECE_LENGTH])
+                data = data[PIECE_LENGTH:]
+                counter += 1
+        if len(data) > 0:
+            pieces_hash += self.hash_piece(data)
+            counter += 1
+        info_hash = self.build_meta_file(path, file_length, PIECE_LENGTH, pieces_hash)
+        """
+        for i in xrange(counter):
+            try:
+                seeders[i].add_new_file(filename, pieces[i], info_hash, i, PIECE_LENGTH)"""
         return "The file has been added."
 
-    def build_meta_file(self, pieces, path, file_length, piece_length, pieces_hash):
+    def build_meta_file(self, path, file_length, piece_length, pieces_hash):
         port = TRACKER_PORT.__str__()
         ip = [ip for ip in socket.gethostbyname_ex(socket.gethostname())[2] if not ip.startswith("127.")][:1][0]
-        announce = "udp://" + ip + ":" + port
+        announce = "udp://" + ip + ":" + port + "/announce"
         filename = path.split("\\")[-1]
-        filename = filename.split(".")[0] + ".torrent"
-        info = {"name" : filename, "piece length": piece_length, "length": file_length, "pieces": pieces_hash }
+        temp = filename.split(".")
+        temp[-1] = "torrent"
+        torrent_name = temp[0]
+        for i in temp[1:]:
+            torrent_name += "." + i
+        info = {'name' : filename, 'piece length': piece_length, 'length': file_length, 'pieces': pieces_hash }
         file = {"announce" : announce, "info" : info}
-        MemoryHandler.save_file(filename, bencode.bencode(file))
+        print file
+        MemoryHandler.save_file(torrent_name, bencode.bencode(file))
         return self.hash_piece(bencode.bencode(info))
 
     def remove_files(self, path):
