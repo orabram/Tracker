@@ -11,7 +11,7 @@ MAX_CONNECTION_ID = 99999999
 NO_SCRAPE_SUPPORT = "The tracker doesn't support scraping at the moment."
 CONNECTION_ID_EXPIRED = "The connection id has expired. Please resend an a connect request."
 WRONG_CONNECTION_ID = "The connection ID you were attempting to use is incorrect. Please resend a connect request."
-GENERIC_ERROR_MESSEAGE = "An error has occured. Please attemt to connect to the tracker again."
+GENERIC_ERROR_MESSEAGE = "An error has occurred. Please attempt to connect to the tracker again."
 
 class ClientManager():
     def __init__(self, ip, port, seeder_manager):

@@ -15,17 +15,17 @@ namespace Tracker_GUI
 {
     public partial class TrackerGui : Form
     {
-        delegate void SetTextCallback(string text);
-
         public TrackerGui()
         {
             InitializeComponent();
             SocketClient socket = GlobalVariables.GetSocket();
             socket.Connect();
-            /*Thread update_seeders_list = new Thread(RecvSeedersList);
-            update_seeders_list.Start();*/
+            Thread update_seeders_list = new Thread(RecvSeedersList);
+            update_seeders_list.Start();
         }
-        
+
+        public delegate void ProcessMessage(string message);
+
         public bool CheckIP()
         {
             if (IP.Text.Split('.').Length != 4)
@@ -41,49 +41,78 @@ namespace Tracker_GUI
             return true;
         }
 
-        private void SetText(string text)
-        {
-            // InvokeRequired required compares the thread ID of the
-            // calling thread to the thread ID of the creating thread.
-            // If these threads are different, it returns true.
-            if (this.ErrorBox.InvokeRequired)
-            {
-                SetTextCallback d = new SetTextCallback(SetText);
-                this.Invoke(d, new object[] { text });
-            }
-            else
-            {
-                this.ErrorBox.Text = text;
-            }
-        }
-
-
         public void MessageParse(string message)
         {
             string[] temp = message.Split('#');
             if (temp[0] == "list")
             {
-                for (int i = 1; i < temp.Length; i++)
+                if (this.SeedersList.InvokeRequired)
                 {
-                    SeedersList.Items.Add(temp[i]);
+                    ProcessMessage p = new ProcessMessage(MessageParse);
+                    this.Invoke(p, new object[] { message });
+                }
+                else
+                {
+                    SeedersList.Items.Clear();
+                }
+                    for (int i = 1; i < temp.Length; i++)
+                {   
+                    if (this.SeedersList.InvokeRequired)
+                    {
+                        ProcessMessage p = new ProcessMessage(MessageParse);
+                        this.Invoke(p, new object[] { message });
+                    }
+                    else
+                    {
+                        if (!SeedersList.Items.Contains(temp[i]))
+                        {
+                            SeedersList.Items.Add(temp[i]);
+                        }
+                    }
                 }
             }
             else if (temp[0] == "info")
             {
-                SeederData.Text = temp[1];
+                if (this.SeederData.InvokeRequired)
+                {
+                    ProcessMessage p = new ProcessMessage(MessageParse);
+                    this.Invoke(p, new object[] { message });
+                }
+                else
+                {
+                    SeederData.Text = temp[1];
+                }
             }
+
+            else if (temp[0] == "")
+            {
+                if (this.ErrorBox.InvokeRequired)
+                {
+                    ProcessMessage p = new ProcessMessage(MessageParse);
+                    this.Invoke(p, new object[] { message });
+                }
+                else
+                {
+                    ErrorBox.Text = "Lost connection.";
+                }
+            }
+
             else
             {
-                SetText(temp[1]);
+                if (this.ErrorBox.InvokeRequired)
+                {
+                    ProcessMessage p = new ProcessMessage(MessageParse);
+                    this.Invoke(p, new object[] { message });
+                }
+                else
+                {
+                    ErrorBox.Text = (temp[0]);
+                }
             }
         }
 
         private void AddFile_Click(object sender, EventArgs e)
         {
-            /*Process p = new Process();
-            p.StartInfo.FileName = "cmd.exe";
-            p.StartInfo.Arguments = @"/C C:\Python27\python.exe " + Application.StartupPath + @"\server.py";
-            p.Start(); // Starts the python program*/
             OpenFileDialog fDialog = new OpenFileDialog();
             fDialog.Title = "Choose a File";
             fDialog.InitialDirectory = @"C:\";
@@ -103,7 +132,8 @@ namespace Tracker_GUI
             if ((string)SeedersList.SelectedItem == "2")
                 FileLocation.Text = ((string)SeedersList.SelectedItem);
         }
-        /*public void RecvSeedersList()
+
+        public void RecvSeedersList()
         {
             SocketClient socket = GlobalVariables.GetSocket();
             while (true)
@@ -112,7 +142,7 @@ namespace Tracker_GUI
                 MessageParse(command);
             }
         }
-        */
+
         private void AddSeeder_Click(object sender, EventArgs e)
         {
             if (CheckIP())
@@ -120,14 +150,15 @@ namespace Tracker_GUI
                 string message = "adds#" + IP.Text + "#" + Port.Text;
                 GlobalVariables.GetSocket().Send(message);
             }
-            
+
         }
 
         private void RemoveSeeder_Click(object sender, EventArgs e)
         {
             if (CheckIP())
             {
-                string message = "removes#" + IP.Text;
+                string selected = SeedersList.GetItemText(SeedersList.SelectedItem);
+                string message = "removes#" + selected;
                 GlobalVariables.GetSocket().Send(message);
                 message = GlobalVariables.GetSocket().Recv();
                 MessageParse(message);
@@ -162,6 +193,19 @@ namespace Tracker_GUI
                 message = GlobalVariables.GetSocket().Recv();
                 MessageParse(message);
             }
+        }
+
+        private void RefreshButton_Click(object sender, EventArgs e)
+        {
+            GlobalVariables.GetSocket().Send("refresh");
+            MessageParse(GlobalVariables.GetSocket().Recv());
+        }
+
+        private void Info_Click(object sender, EventArgs e)
+        {
+            GlobalVariables.GetSocket().Send("info#" + IP.Text);
+            SeederData.Text = GlobalVariables.GetSocket().Recv();
+
         }
     }
 }

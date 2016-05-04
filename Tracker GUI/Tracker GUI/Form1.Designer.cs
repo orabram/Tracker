@@ -44,6 +44,10 @@
             this.ErrorBox = new System.Windows.Forms.RichTextBox();
             this.Mark = new System.Windows.Forms.Button();
             this.RemoveFile = new System.Windows.Forms.Button();
+            this.Unmark = new System.Windows.Forms.Button();
+            this.Shuffle = new System.Windows.Forms.Button();
+            this.RefreshButton = new System.Windows.Forms.Button();
+            this.Info = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // SeedersList
@@ -119,7 +123,7 @@
             // 
             // SendFile
             // 
-            this.SendFile.Location = new System.Drawing.Point(307, 321);
+            this.SendFile.Location = new System.Drawing.Point(193, 321);
             this.SendFile.Name = "SendFile";
             this.SendFile.Size = new System.Drawing.Size(75, 23);
             this.SendFile.TabIndex = 8;
@@ -145,7 +149,7 @@
             // 
             // RemoveSeeder
             // 
-            this.RemoveSeeder.Location = new System.Drawing.Point(640, 383);
+            this.RemoveSeeder.Location = new System.Drawing.Point(760, 371);
             this.RemoveSeeder.Name = "RemoveSeeder";
             this.RemoveSeeder.Size = new System.Drawing.Size(75, 23);
             this.RemoveSeeder.TabIndex = 11;
@@ -164,7 +168,7 @@
             // 
             // Mark
             // 
-            this.Mark.Location = new System.Drawing.Point(193, 321);
+            this.Mark.Location = new System.Drawing.Point(87, 371);
             this.Mark.Name = "Mark";
             this.Mark.Size = new System.Drawing.Size(75, 23);
             this.Mark.TabIndex = 13;
@@ -173,7 +177,7 @@
             // 
             // RemoveFile
             // 
-            this.RemoveFile.Location = new System.Drawing.Point(193, 371);
+            this.RemoveFile.Location = new System.Drawing.Point(307, 321);
             this.RemoveFile.Name = "RemoveFile";
             this.RemoveFile.Size = new System.Drawing.Size(75, 23);
             this.RemoveFile.TabIndex = 14;
@@ -181,11 +185,53 @@
             this.RemoveFile.UseVisualStyleBackColor = true;
             this.RemoveFile.Click += new System.EventHandler(this.RemoveFile_Click);
             // 
+            // Unmark
+            // 
+            this.Unmark.Location = new System.Drawing.Point(193, 371);
+            this.Unmark.Name = "Unmark";
+            this.Unmark.Size = new System.Drawing.Size(75, 23);
+            this.Unmark.TabIndex = 15;
+            this.Unmark.Text = "Decrypt";
+            this.Unmark.UseVisualStyleBackColor = true;
+            // 
+            // Shuffle
+            // 
+            this.Shuffle.Location = new System.Drawing.Point(307, 371);
+            this.Shuffle.Name = "Shuffle";
+            this.Shuffle.Size = new System.Drawing.Size(75, 23);
+            this.Shuffle.TabIndex = 16;
+            this.Shuffle.Text = "Shuffle";
+            this.Shuffle.UseVisualStyleBackColor = true;
+            // 
+            // RefreshButton
+            // 
+            this.RefreshButton.Location = new System.Drawing.Point(638, 371);
+            this.RefreshButton.Name = "RefreshButton";
+            this.RefreshButton.Size = new System.Drawing.Size(75, 23);
+            this.RefreshButton.TabIndex = 17;
+            this.RefreshButton.Text = "Refresh";
+            this.RefreshButton.UseVisualStyleBackColor = true;
+            this.RefreshButton.Click += new System.EventHandler(this.RefreshButton_Click);
+            // 
+            // Info
+            // 
+            this.Info.Location = new System.Drawing.Point(513, 371);
+            this.Info.Name = "Info";
+            this.Info.Size = new System.Drawing.Size(75, 23);
+            this.Info.TabIndex = 18;
+            this.Info.Text = "Info";
+            this.Info.UseVisualStyleBackColor = true;
+            this.Info.Click += new System.EventHandler(this.Info_Click);
+            // 
             // TrackerGui
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1271, 469);
+            this.Controls.Add(this.Info);
+            this.Controls.Add(this.RefreshButton);
+            this.Controls.Add(this.Shuffle);
+            this.Controls.Add(this.Unmark);
             this.Controls.Add(this.RemoveFile);
             this.Controls.Add(this.Mark);
             this.Controls.Add(this.ErrorBox);
@@ -226,6 +272,10 @@
         private System.Windows.Forms.RichTextBox ErrorBox;
         private System.Windows.Forms.Button Mark;
         private System.Windows.Forms.Button RemoveFile;
+        private System.Windows.Forms.Button Unmark;
+        private System.Windows.Forms.Button Shuffle;
+        private System.Windows.Forms.Button RefreshButton;
+        private System.Windows.Forms.Button Info;
     }
 }
 

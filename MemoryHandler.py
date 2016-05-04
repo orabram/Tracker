@@ -2,6 +2,7 @@
 # Name: memory handler
 # Version:1.1
 # By: Or Abramovich
+#     Yaniv Sharon
 #endregion -------------Info------------
 
 #region -------------Imports---------
@@ -17,7 +18,7 @@ from Crypto.Hash import SHA512
 def get_server_settings():
     settings = {}
     settings_location = os.path.dirname(os.path.abspath(__file__)) + '\\Files\\Private Server Files\\server settings.cfg'
-    settings_file = open(settings_location, 'rb')
+    settings_file = open(settings_location, 'r')
     settings_list = settings_file.read().split('\n')
     for setting in settings_list:
         if setting[0] != '#':
@@ -53,7 +54,7 @@ def save_file(file_name, file_data, password=''):
     storage_location = os.path.dirname(os.path.abspath(__file__)) + '\\Files\\Storage'
     inserted_file_info = '%s:%s:%s:%s' % (file_name, file_ext, password, time.strftime('%d/%b/%Y', time.gmtime()))
     info_location = storage_location + '\\storage info.txt'
-    info_file = open(info_location, 'rb')
+    info_file = open(info_location, 'r')
     info_file_data = info_file.read()
     info_file.close()
     if info_file_data == '':
@@ -92,7 +93,7 @@ def save_file(file_name, file_data, password=''):
             new_file = open('%s\\%s.%s' % (storage_location, file_name, file_ext), 'wb')
         new_file.write(file_data)
         new_file.close()
-        new_info_file = open(storage_location + '\\temp.txt', 'wb')
+        new_info_file = open(storage_location + '\\temp.txt', 'w')
         new_info_file_data = ''
         for file_info in file_list:
             new_info_file_data += file_info + '\n'
@@ -116,7 +117,7 @@ def get_file(file_name, password=''):
     alt_file_name = file_name[: - len(splitted_file_name[-1]) - 1]
     storage_location = os.path.dirname(os.path.abspath(__file__)) + '\\Files\\Storage'
     info_location = storage_location + '\\storage info.txt'
-    info_file = open(info_location, 'rb')
+    info_file = open(info_location, 'r')
     file_list = info_file.read().split('\n')
     info_file.close()
     first = 0
@@ -134,7 +135,7 @@ def get_file(file_name, password=''):
     if info is None:
         return False, 'File not found'
     if info[2] != password and not info[2] == '':
-        return False, 'Incorrect password'
+        return False, 'Incorrect password (get shreked scrub)'
     if info[1] == '':
         return True, open('%s\\%s' % (storage_location, info[0]), 'rb')
     return True, open('%s\\%s.%s' % (storage_location, info[0], info[1]), 'rb')
@@ -151,7 +152,7 @@ def delete_file(file_name, password):
     alt_file_name = file_name[: - len(splitted_file_name[-1]) - 1]
     storage_location = os.path.dirname(os.path.abspath(__file__)) + '\\Files\\Storage'
     info_location = storage_location + '\\storage info.txt'
-    info_file = open(info_location, 'rb')
+    info_file = open(info_location, 'r')
     file_list = info_file.read().split('\n')
     info_file.close()
     first = 0
@@ -173,7 +174,7 @@ def delete_file(file_name, password):
         return False, 'Incorrect password (get shreked scrub)'
     os.remove('%s\\%s.%s' % (storage_location, info[0], info[1]))
     file_list.remove(file_list[midpoint])
-    new_info_file = open(storage_location + '\\temp.txt', 'wb')
+    new_info_file = open(storage_location + '\\temp.txt', 'w')
     new_info_file_text = ''
     for file_info in file_list:
         new_info_file_text += file_info + '\n'
