@@ -1,21 +1,23 @@
-__author__ = 'Or'
 #region -------------Info------------
-# Name:
-# Version:1.1
+# Name: Seeder
+# Version: 1.0
 # By: Or Abramovich
 #endregion -------------Info------------
 
 #region -------------Imports---------
-
-#endregion -------------Imports---------
-
-#region -------------Methods-----------
-
 import socket
 import os
 import time
 
+#endregion -------------Imports---------
+
+#region -------------Constants--------------
+
 BUFFER = 4096
+
+#endregion -------------Constants--------------
+
+#region -------------Methods&Classes-----------
 
 class Seeder():
     def __init__(self, ip, port, socket):
@@ -98,3 +100,5 @@ class Seeder():
 
     def get_socket(self):
         return self.socket
+
+#endregion -------------Methods&Classes-----------

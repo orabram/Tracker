@@ -1,4 +1,10 @@
-__author__ = 'Or'
+#region -------------Info------------
+# Name: Tracker Communication Manager
+# Version: 1.0
+# By: Or Abramovich
+#endregion -------------Info------------
+
+#region -------------Imports---------
 import socket
 import psutil
 import os
@@ -8,9 +14,17 @@ import time
 import pickle
 import shutil
 
+#endregion -------------Imports---------
+
+#region -------------Constants--------------
+
 SELF_IP = "127.0.0.1"
 FILES_LOCATION = "C:\\"
 SETTINGS_LOCATION = FILES_LOCATION + "\\" + "settings"
+
+#endregion -------------Constants--------------
+
+#region -------------Methods&Classes-----------
 
 class TrackerCommunicationManager():
     def __init__(self):
@@ -208,7 +222,7 @@ class TrackerCommunicationManager():
     def get_files(self):
         return self.files
 
-
+#endregion -------------Methods&Classes-----------
 
 
 

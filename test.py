@@ -1,11 +1,26 @@
+#region -------------Info------------
+# Name: Seeder
+# Version: 1.0
+# By: Or Abramovich
+#endregion -------------Info------------
+
+#region -------------Imports---------
 from GUIManager import *
 from SeedersManager import *
 from threading import Thread
+
+#endregion -------------Imports---------
+
+#region -------------Constants--------------
 
 SELF_IP = "0.0.0.0"
 TRACKER_PORT = 3456
 GUI_INTERVAL = 15
 SEEDERS_INTERVAL = 600
+
+#endregion -------------Constants--------------
+
+#region -------------Methods&Classes-----------
 
 def start_processes():
     t1 = Thread(target=connect_to_gui, args=[gui_manager])
@@ -35,8 +50,14 @@ def update_seeders(seeders_manager):
         if time.time() - time1 >= float(SEEDERS_INTERVAL):
             seeders_manager.get_seeders_status()
 
+#region -------------Methods&Classes-----------
+
+#region --------------Main----------------
+
 if __name__ == '__main__':
     seeders_manager = seeder_communication_manager()
     gui_manager = gui_manager(seeders_manager)
     gui_manager.establish_connection()
     start_processes()
+
+#endregion ----------------Main-----------------

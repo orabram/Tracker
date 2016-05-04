@@ -1,12 +1,27 @@
 __author__ = 'Or'
+#region -------------Info------------
+# Name: GUIManager
+# Version: 1.0
+# By: Or Abramovich
+#endregion -------------Info------------
 
+#region -------------Imports---------
 import socket
 from SeedersManager import *
+
+
+#endregion -------------Imports---------
+
+#region -------------Constants--------------
 
 IP = "127.0.0.1"
 PORT = 5555
 GUI_PORT = 6666
 BUFFER = 4096
+
+#endregion -------------Constants--------------
+
+#region -------------Methods&Classes-----------
 
 class gui_manager():
     def __init__(self, seeders_manager):
@@ -63,5 +78,7 @@ class gui_manager():
             error_message = self.send_computers_list()
             self.gui.send(error_message)
             print "request fulfilled"
+
+#endregion -------------Methods&Classes-----------
 
 

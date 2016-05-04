@@ -1,4 +1,10 @@
-__author__ = 'Or'
+#region -------------Info------------
+# Name: Tracker
+# Version: 1.0
+# By: Or Abramovich
+#endregion -------------Info------------
+
+#region -------------Imports---------
 from ClientManager import *
 from SeedersManager import *
 from GUIManager import *
@@ -6,11 +12,18 @@ import socket
 import struct
 from multiprocessing import Process
 import os
+#endregion -------------Imports---------
+
+#region -------------Constants--------------
 
 SELF_IP = "0.0.0.0"
 TRACKER_PORT = 3456
 GUI_INTERVAL = 120
 SEEDERS_INTERVAL = 300
+
+#endregion -------------Constants--------------
+
+#region -------------Methods&Classes-----------
 
 def start_processes():
     p = Process(target=clients_manager.wait_for_connections)

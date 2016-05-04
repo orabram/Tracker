@@ -1,5 +1,10 @@
-__author__ = 'Or'
+#region -------------Info------------
+# Name: Seeder's Manager
+# Version: 1.0
+# By: Or Abramovich
+#endregion -------------Info------------
 
+#region -------------Imports---------
 from Seeder import *
 from multiprocessing import Process
 #from Tracker import *
@@ -10,8 +15,16 @@ from Crypto.Hash import SHA
 import math
 import struct
 
+#endregion -------------Imports---------
+
+#region -------------Constants--------------
+
 TRACKER_PORT = 3456
-PIECE_LENGTH = 262144 # the maximum piece size is 4mb, or 4000000 bytes.
+PIECE_LENGTH = 262144
+
+#endregion -------------Constants--------------
+
+#region -------------Methods&Classes-----------
 
 class seeder_communication_manager():
     def __init__(self):
@@ -163,7 +176,7 @@ class seeder_communication_manager():
             if s.get_files_list().contains(filename):
                 s.mark_as_safe(filename)
 
-
+#endregion -------------Methods&Classes-----------
 
 
 

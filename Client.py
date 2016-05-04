@@ -1,12 +1,25 @@
-__author__ = 'Or'
+#region -------------Info------------
+# Name: Seeder
+# Version: 1.0
+# By: Or Abramovich
+#endregion -------------Info------------
+
+#region -------------Imports---------
 from TrackerCommunicationManager import *
 from ClientCommunication import *
 import time
 from multiprocessing import Process
 
+#endregion -------------Imports---------
+
+#region -------------Constants--------------
+
 IP = "0.0.0.0"
 PORT = 6881
 
+#endregion -------------Constants--------------
+
+#region -------------Methods&Classes-----------
 
 def start_processes(tracker_communicator):
     p = Process(target=connect_to_tracker, args=[tracker_communicator])
@@ -28,5 +41,12 @@ def manage_downloads(tracker_communicator):
         p = Process(target=ClientCommunication.manage_download)
         p.start()
 
-tracker_communicator = TrackerCommunicationManager()
-start_processes(tracker_communicator)
+#endregion -------------Methods&Classes-----------
+
+#region ----------Main--------
+
+if __name__ == '__main__':
+    tracker_communicator = TrackerCommunicationManager()
+    start_processes(tracker_communicator)
+
+#endregion --------Main---------
