@@ -21,6 +21,7 @@ import shutil
 SELF_IP = "127.0.0.1"
 FILES_LOCATION = "C:\\"
 SETTINGS_LOCATION = FILES_LOCATION + "\\" + "settings"
+PEER_ID = "-OC000266666666666666-"
 
 #endregion -------------Constants--------------
 
@@ -28,7 +29,7 @@ SETTINGS_LOCATION = FILES_LOCATION + "\\" + "settings"
 
 class TrackerCommunicationManager():
     def __init__(self):
-        self.peer_id = "-OC000266666666666666-" # OC stands for Or's Client, 0002 represents the version number(0.2) and the 6's are just random.
+        self.peer_id = PEER_ID # OC stands for Or's Client, 0002 represents the version number(0.2) and the 6's are just random.
         if not os.path.exists(SETTINGS_LOCATION): #Load Information from the settings file.
             os.makedirs(SETTINGS_LOCATION)
         try:
@@ -47,14 +48,14 @@ class TrackerCommunicationManager():
 
     #Reads the settings from the settings.dat file
     def set_settings(self, file):
-        file = open("C:\\settings\\settings.dat")
+        file = open(SETTINGS_LOCATION + "\\settings.dat", "r")
         num = int(file.read(1))
         self.port = file.read(num)
         if self.port == "":
             self.port = 5789
         self.port = int(self.port)
         num = int(file.read(1))
-        self.buffer = file.read(num)  # The largest piece size I'm allowing is 4000000 bytes.
+        self.buffer = file.read(num)
         if self.buffer == "":
             self.buffer = 16384
         self.buffer = int(self.buffer)
@@ -112,7 +113,7 @@ class TrackerCommunicationManager():
 
     #Updates the settings file.
     def change_files(self, files):
-        f = open("C:\\settings\\settings.dat", "w")
+        f = open(SETTINGS_LOCATION + "\\settings.dat", "w")
         f.write(str(len(str(self.port))))
         f.write(str(self.port))
         f.write(str(len(str(self.buffer))))
