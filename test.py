@@ -5,7 +5,7 @@ from threading import Thread
 SELF_IP = "0.0.0.0"
 TRACKER_PORT = 3456
 GUI_INTERVAL = 15
-SEEDERS_INTERVAL = 60
+SEEDERS_INTERVAL = 600
 
 def start_processes():
     t1 = Thread(target=connect_to_gui, args=[gui_manager])
