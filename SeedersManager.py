@@ -14,6 +14,7 @@ import bencode
 from Crypto.Hash import SHA
 import math
 import struct
+from RSAEncryption import *
 
 #endregion -------------Imports---------
 
@@ -29,6 +30,7 @@ PIECE_LENGTH = 262144
 class seeder_communication_manager():
     def __init__(self):
         self.seeders_list = []
+        self.encryptor = RSAEncryption()
 
     """def profile_builder(self, stats):
         stats = stats.split(";")
@@ -166,15 +168,23 @@ class seeder_communication_manager():
     #except:
         #return "A problem has occurred."
 
-    def mark_as_suspicious(self, filename):
+    def mark_as_suspicious(self, path):
+        filename = path.split("\\")[-1]
         for s in self.seeders_list:
-            if s.get_files_list().contains(filename):
-                s.mark_as_suspicious(filename)
+            if filename in s.get_files_list():
+                comment = s.mark_suspicious_files(filename, self.encryptor, path)
+                if comment != "The file has been encrypted successfully":
+                    return comment
+        return comment
 
-    def mark_as_safe(self, filename):
+    def mark_as_safe(self, path):
+        filename = path.split("\\")[-1]
         for s in self.seeders_list:
-            if s.get_files_list().contains(filename):
-                s.mark_as_safe(filename)
+            if filename in s.get_files_list():
+                comment = s.mark_as_safe(filename, self.encryptor, path)
+                if comment != "The file has been encrypted successfully":
+                    return comment
+        return comment
 
 #endregion -------------Methods&Classes-----------
 

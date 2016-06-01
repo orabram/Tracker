@@ -2,7 +2,6 @@
 # Name: memory handler
 # Version:1.1
 # By: Or Abramovich
-#     Yaniv Sharon
 #endregion -------------Info------------
 
 #region -------------Imports---------
@@ -14,7 +13,7 @@ from Crypto.Hash import SHA512
 
 #region -------------Methods-----------
 
-
+# Gets the server's settings
 def get_server_settings():
     settings = {}
     settings_location = os.path.dirname(os.path.abspath(__file__)) + '\\Files\\Private Server Files\\server settings.cfg'
@@ -28,7 +27,7 @@ def get_server_settings():
     settings['domain'] = [ip for ip in socket.gethostbyname_ex(socket.gethostname())[2] if not ip.startswith("127.")][:1][0]
     return settings
 
-
+# Returns a file's content
 def get_server_file(file_name):
     file_location = os.path.dirname(os.path.abspath(__file__)) + '\\Files\\Public Server Files\\' + file_name
     if not os.path.isfile(file_location):
@@ -38,7 +37,7 @@ def get_server_file(file_name):
     file.close()
     return True, file_info
 
-
+# Saves a new file
 def save_file(file_name, file_data, password=''):
     splitted_file_name = file_name.split('.')
     if len(splitted_file_name) != 1:
@@ -105,7 +104,7 @@ def save_file(file_name, file_data, password=''):
     return file_saved
 
 
-
+#
 def hash_save_file(file_name, password, file_data):
     sha = SHA512.new(password)
     password = sha.hexdigest()

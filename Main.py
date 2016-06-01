@@ -1,7 +1,7 @@
 # region -------------Info------------
 # Name: http file server
 # Version: 1.0
-# By: Yaniv Sharon
+# By: Or Abramovich
 # endregion -------------Info------------
 
 # region -------------Imports---------

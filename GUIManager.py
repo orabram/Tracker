@@ -1,4 +1,3 @@
-__author__ = 'Or'
 #region -------------Info------------
 # Name: GUIManager
 # Version: 1.0
@@ -8,7 +7,6 @@ __author__ = 'Or'
 #region -------------Imports---------
 import socket
 from SeedersManager import *
-
 
 #endregion -------------Imports---------
 
@@ -27,16 +25,19 @@ class gui_manager():
     def __init__(self, seeders_manager):
         self.manager = seeders_manager
 
+    # Establishes connection with the GUI
     def establish_connection(self):
         gui = socket.socket()
         gui.bind((IP, PORT))
         gui.connect((IP, GUI_PORT))
         self.gui = gui
 
+    #Sends the updated list
     def send_computers_list(self):
         self.gui.send("list" + self.manager.get_seeders_list())
         return "The list has been refreshed."
 
+    # Parses commands from the GUI
     def get_new_commands(self):
         command = self.gui.recv(BUFFER)
         command = command.split("#")
@@ -61,9 +62,13 @@ class gui_manager():
             self.gui.send(error_message)
             print "request fulfilled"
         elif command[0] == "mark":
-            self.manager.mark_as_suspicious(command[1])
+            error_message = self.manager.mark_as_suspicious(command[1])
+            self.gui.send(error_message)
+            print error_message
         elif command[0] == "unmark":
-            self.manager.mark_as_safe(command[1])
+            error_message = self.manager.mark_as_safe(command[1])
+            self.gui.send(error_message)
+            print error_message
         elif command[0] == "info":
             print "information request"
             for s in self.manager.get_seeders_list2():

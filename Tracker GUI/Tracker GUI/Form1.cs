@@ -55,8 +55,8 @@ namespace Tracker_GUI
                 {
                     SeedersList.Items.Clear();
                 }
-                    for (int i = 1; i < temp.Length; i++)
-                {   
+                for (int i = 1; i < temp.Length; i++)
+                {
                     if (this.SeedersList.InvokeRequired)
                     {
                         ProcessMessage p = new ProcessMessage(MessageParse);
@@ -206,6 +206,36 @@ namespace Tracker_GUI
             GlobalVariables.GetSocket().Send("info#" + IP.Text);
             SeederData.Text = GlobalVariables.GetSocket().Recv();
 
+        }
+
+        private void Mark_Click(object sender, EventArgs e)
+        {
+            if (FileLocation.Text == "")
+            {
+                ErrorBox.Text = "The location you've entered is invalid.";
+            }
+            else
+            {
+                string message = "mark" + "#" + FileLocation.Text;
+                GlobalVariables.GetSocket().Send(message);
+                message = GlobalVariables.GetSocket().Recv();
+                MessageParse(message);
+            }
+        }
+
+        private void Unmark_Click(object sender, EventArgs e)
+        {
+            if (FileLocation.Text == "")
+            {
+                ErrorBox.Text = "The location you've entered is invalid.";
+            }
+            else
+            {
+                string message = "unmark" + "#" + FileLocation.Text;
+                GlobalVariables.GetSocket().Send(message);
+                message = GlobalVariables.GetSocket().Recv();
+                MessageParse(message);
+            }
         }
     }
 }

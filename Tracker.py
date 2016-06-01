@@ -19,7 +19,7 @@ import os
 SELF_IP = "0.0.0.0"
 TRACKER_PORT = 3456
 GUI_INTERVAL = 120
-SEEDERS_INTERVAL = 300
+SEEDERS_INTERVAL = 30
 
 #endregion -------------Constants--------------
 

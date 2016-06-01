@@ -9,19 +9,26 @@ import socket
 import psutil
 import os
 import math
+import Crypto
 from Crypto.Hash import SHA
+from Crypto import Random
+from Crypto.PublicKey import RSA
 import time
 import pickle
 import shutil
+import base64
+import ast
 
 #endregion -------------Imports---------
 
 #region -------------Constants--------------
 
 SELF_IP = "127.0.0.1"
+ENCRYPTION_NUMBER = 32
 FILES_LOCATION = "C:\\"
 SETTINGS_LOCATION = FILES_LOCATION + "\\" + "settings"
 PEER_ID = "-OC000266666666666666-"
+CHUNK_SIZE = 128
 
 #endregion -------------Constants--------------
 
@@ -40,6 +47,7 @@ class TrackerCommunicationManager():
             self.port = 5789
             self.buffer = 16384
             self.files = {}
+            file.write()
             file.write("45789")
             file.write("516384")
             pickle.dump(self.files, file)
@@ -176,11 +184,57 @@ class TrackerCommunicationManager():
         del self.files[filename]
         self.change_files(self.files)
 
-    def mark_piece(self, filename):
-        print 1
+    def mark_file(self, filename):
+        self.tracker_socket.send("ready")
+        string_pubkey = self.tracker_socket.recv(self.buffer)
+        pubkey = pickle.loads(string_pubkey)
+        split_name = filename.split(".")
+        split_name.remove(split_name[-1])
+        dir_name = FILES_LOCATION + split_name[0]
+        for i in split_name[1:]:
+            dir_name += "." + i
+        f = open(dir_name + "\\" + filename, 'rb')
+        content = f.read()
+        f.close()
+        content = base64.b64encode(content)
+        f = open(dir_name + "\\" + filename, 'wb')
+        print content
+        print type(content)
+        encrypted = []
+        counter = 0
+        for i in xrange(int(math.ceil(len(content) / CHUNK_SIZE)) - 1):
+            encrypted.append(pubkey.encrypt(content[int(CHUNK_SIZE) * i: int(CHUNK_SIZE) * (i + 1)], 32))
+            counter += 1
+        encrypted.append(pubkey.encrypt(content[int(CHUNK_SIZE) * counter:], 32))
+        pickle.dump(encrypted, f)
+        f.close()
+        self.tracker_socket.send("encrypted")
 
-    def unmark_piece(self, filename):
-        print 2
+    def unmark_file(self, filename):
+        self.tracker_socket.send("ready")
+        split_name = filename.split(".")
+        split_name.remove(split_name[-1])
+        dir_name = FILES_LOCATION + split_name[0]
+        for i in split_name[1:]:
+            dir_name += "." + i
+        f = open(dir_name + "\\" + filename, 'rb')
+        encoded_content = pickle.load(f)
+        f.close()
+        string_encoded_content = pickle.dumps(encoded_content)
+        encoded_content2 = pickle.loads(string_encoded_content)
+        self.tracker_socket.send(string_encoded_content)
+        self.tracker_socket.send("done")
+        decrypted_content = ""
+        data = self.tracker_socket.recv(self.buffer)
+        while data != "done":
+            decrypted_content += data
+            data = self.tracker_socket.recv(self.buffer)
+        print decrypted_content
+        content = base64.b64decode(decrypted_content)
+        print content
+        f = open(dir_name + "\\" + filename, 'wb')
+        f.write(content)
+        self.tracker_socket.send("decrypted")
 
     #Processes packets and sends them to where they belong.
     def parse_packet(self):
@@ -197,9 +251,9 @@ class TrackerCommunicationManager():
         elif packet[0] == "remove":
             self.remove_file(packet[1])
         elif packet[0] == "mark":
-            self.mark_piece(packet[1])
+            self.mark_file(packet[1])
         elif packet[0] == "unmark":
-            self.unmark_piece(packet[1])
+            self.unmark_file(packet[1])
         elif packet == "":
             self.tracker_socket.close()
 

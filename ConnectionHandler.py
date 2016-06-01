@@ -26,6 +26,7 @@ class ConnectionHandler:
         self.https_socket.bind((self.settings['https_ip'], int(self.settings['https_port'])))
         self.https_socket.listen(10)
 
+    # Handles the communication with the website
     def http_communication(self, socket):
         print 'Got a request from: ' + socket.getpeername()[0]
         has_length = False

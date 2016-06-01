@@ -1,5 +1,5 @@
 #region -------------Info------------
-# Name: Seeder
+# Name: Client
 # Version: 1.0
 # By: Or Abramovich
 #endregion -------------Info------------

@@ -8,13 +8,15 @@
 import socket
 import os
 import time
+import math
+import pickle
 
 #endregion -------------Imports---------
 
 #region -------------Constants--------------
 
 BUFFER = 4096
-
+CHUNK_SIZE = 128
 #endregion -------------Constants--------------
 
 #region -------------Methods&Classes-----------
@@ -29,16 +31,54 @@ class Seeder():
         self.info_hash_list = []
         self.profile = 0
 
-    def mark_suspicious_files(self, filename):
+    # Encrypts a file
+    def mark_suspicious_files(self, filename, encryptor, path):
         self.socket.send("mark#" + filename)
-        info_hash = self.files[filename][1]
-        self.files[filename] = ["suspicious", info_hash]
+        confirmation = self.socket.recv(BUFFER)
+        if confirmation == "":
+            exit(0)
+        if confirmation == "ready":
+            key = encryptor.generate_keys()
+            pubkey = encryptor.get_pub_key(key)
+            string_key = pickle.dumps(pubkey)
+            self.socket.send(string_key)
+            key2 = pickle.dumps(key)
+            self.socket.send(key2)
+            confirmation = self.socket.recv(BUFFER)
+            if confirmation == "":
+                return "disconnected"
+            elif confirmation == "encrypted":
+                encryptor.create_key_pair(filename, key)
+        self.files[filename][0] = "suspicious"
+        return "The file has been encrypted successfully"
 
-    def mark_as_safe(self, filename):
+    # Decrypts a file
+    def mark_as_safe(self, filename, encryptor, path):
         self.socket.send("unmark#" + filename)
-        info_hash = self.files[filename][1]
-        self.files[filename] = ["safe", info_hash]
+        confirmation = self.socket.recv(BUFFER)
+        encrypted_data = ""
+        if confirmation == "":
+            return "disconnected"
+        if confirmation == "ready":
+            data = self.socket.recv(BUFFER)
+            while data != "done":
+                encrypted_data += data
+                data = self.socket.recv(BUFFER)
+            encrypted = pickle.loads(encrypted_data)
+            key = encryptor.get_key(filename)
+            decrypted = ""
+            for i in xrange(len(encrypted)):
+                decrypted += encryptor.decrypt_message(key, encrypted[i])
+            self.socket.send(decrypted)
+            self.socket.send("done")
+            confirmation = self.socket.recv(BUFFER)
+        if confirmation == "decrypted":
+            self.files[filename][0] = "safe"
+            return "The file has been decrypted successfully"
+        else:
+            return "a bug has occurred"
 
+    # Removes a file
     def remove_file(self, filename):
         self.socket.send("remove#" + filename)
         info_hash = self.files[filename][1]
@@ -47,6 +87,7 @@ class Seeder():
         self.info_hash_list.remove(info_hash)
         return "removed"
 
+    # Adds a file
     def add_new_file(self, filename, chunk, info_hash, piece_num, piece_length, piece_hash):
         confirm = ""
         print "got here 2"
@@ -72,6 +113,7 @@ class Seeder():
             self.files[filename] = ["safe", info_hash]
         return "completed"
 
+    # Returns the machine's profile
     def get_computer_stats(self):
         self.socket.send("profile")
         self.profile = float(self.socket.recv(BUFFER))

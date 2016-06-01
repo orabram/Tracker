@@ -174,6 +174,7 @@
             this.Mark.TabIndex = 13;
             this.Mark.Text = "Encrypt";
             this.Mark.UseVisualStyleBackColor = true;
+            this.Mark.Click += new System.EventHandler(this.Mark_Click);
             // 
             // RemoveFile
             // 
@@ -193,6 +194,7 @@
             this.Unmark.TabIndex = 15;
             this.Unmark.Text = "Decrypt";
             this.Unmark.UseVisualStyleBackColor = true;
+            this.Unmark.Click += new System.EventHandler(this.Unmark_Click);
             // 
             // Shuffle
             // 
@@ -248,7 +250,7 @@
             this.Controls.Add(this.AddSeeder);
             this.Controls.Add(this.SeedersList);
             this.Name = "TrackerGui";
-            this.Text = "Form1";
+            this.Text = "System Monitor";
             this.ResumeLayout(false);
             this.PerformLayout();
 
