@@ -24,7 +24,7 @@ import ast
 #region -------------Constants--------------
 
 SELF_IP = "127.0.0.1"
-EXT_IP = "192.168.2.55"
+EXT_IP = [ip for ip in socket.gethostbyname_ex(socket.gethostname())[2] if not ip.startswith("127.")][:1][0]
 ENCRYPTION_NUMBER = 32
 FILES_LOCATION = "C:\\"
 SETTINGS_LOCATION = FILES_LOCATION + "\\" + "settings"
