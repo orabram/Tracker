@@ -24,6 +24,7 @@ import ast
 #region -------------Constants--------------
 
 SELF_IP = "127.0.0.1"
+EXT_IP = "192.168.2.55"
 ENCRYPTION_NUMBER = 32
 FILES_LOCATION = "C:\\"
 SETTINGS_LOCATION = FILES_LOCATION + "\\" + "settings"
@@ -73,7 +74,7 @@ class TrackerCommunicationManager():
     #Connects to the Tracker.
     def connect_to_tracker(self):
         server = socket.socket()
-        server.bind((SELF_IP, self.port))
+        server.bind((EXT_IP, self.port))
         server.listen(5)
         (self.tracker_socket, tracker_address) = server.accept()
         print "connected"
