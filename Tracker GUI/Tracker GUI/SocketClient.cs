@@ -45,7 +45,14 @@ public class SocketClient
 
     public string Recv() // Decodes the incoming message from byte[] to string.
     {
-        int message = this.clientsocket.Receive(buffer);
+        try
+        {
+            int message = this.clientsocket.Receive(buffer);
+        }
+        catch
+        {
+            return "";
+        }
         string message2 = Encoding.ASCII.GetString(this.buffer, 0, message); // Decoding the message. 
         return message2; // Returns the string.
     }

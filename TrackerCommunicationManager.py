@@ -47,7 +47,6 @@ class TrackerCommunicationManager():
             self.port = 5789
             self.buffer = 16384
             self.files = {}
-            file.write()
             file.write("45789")
             file.write("516384")
             pickle.dump(self.files, file)

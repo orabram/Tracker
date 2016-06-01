@@ -1,42 +1,36 @@
 #region -------------Info------------
-# Name: Tracker
+# Name: Seeder
 # Version: 1.0
 # By: Or Abramovich
 #endregion -------------Info------------
 
 #region -------------Imports---------
-from ClientManager import *
-from SeedersManager import *
 from GUIManager import *
-import socket
-import struct
-from multiprocessing import Process
-import os
+from SeedersManager import *
+from threading import Thread
+from ClientManager import *
+
 #endregion -------------Imports---------
 
 #region -------------Constants--------------
 
 SELF_IP = "0.0.0.0"
 TRACKER_PORT = 3456
-GUI_INTERVAL = 120
-SEEDERS_INTERVAL = 30
+GUI_INTERVAL = 15
 
 #endregion -------------Constants--------------
 
 #region -------------Methods&Classes-----------
 
-def start_processes():
-    p = Process(target=clients_manager.wait_for_connections)
-    p.start()
-    p = Process(target=connect_to_gui, args=[gui_manager])
-    p.start()
-    p = Process(target=get_new_commands, args=[gui_manager])
-    p.start()
-    p = Process(target=update_seeders, args=[seeders_manager])
-    p.start()
+def start_processes(clients_manager):
+    t1 = Thread(target=connect_to_gui, args=[gui_manager])
+    t1.start()
+    t2 = Thread(target=get_new_commands, args=[gui_manager])
+    t2.start()
+    t4 = Thread(target=clients_manager.wait_for_connection)
+    t4.start()
 
 def connect_to_gui(gui_manager):
-    gui_manager.establish_connection()
     time1 = time.time()
     while True:
         if time.time() - time1 >= GUI_INTERVAL:
@@ -48,20 +42,17 @@ def get_new_commands(gui_manager):
     while True:
         gui_manager.get_new_commands()
 
-def update_seeders(seeders_manager):
-    time1 = time.time()
-    while True:
-        if time.time() - time >= SEEDERS_INTERVAL:
-            seeders_manager.get_seeders_status()
 
 
+#region -------------Methods&Classes-----------
 
-seeders_manager = seeder_communication_manager()
-clients_manager = ClientManager(SELF_IP, TRACKER_PORT, seeders_manager)
-gui_manager = gui_manager(seeders_manager)
-start_processes()
+#region --------------Main----------------
 
+if __name__ == '__main__':
+    seeders_manager = seeder_communication_manager()
+    clients_manager = ClientManager(SELF_IP, TRACKER_PORT, seeders_manager)
+    gui_manager = gui_manager(seeders_manager)
+    gui_manager.establish_connection()
+    start_processes(clients_manager)
 
-
-
-
+#endregion ----------------Main-----------------

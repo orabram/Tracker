@@ -9,6 +9,7 @@ import struct
 import socket
 import time
 import random
+import os
 from SeedersManager import *
 
 #endregion -------------Imports---------
@@ -47,6 +48,7 @@ class ClientManager():
         server_socket.bind((self.ip, self.port))
         while True:
             (packet, client_address) = server_socket.recvfrom(BUFFER)
+            print "connected"
             self.ParseRequest(packet, client_address, server_socket)
 
     def valid_time(self, connection_info):#Checks if the connection id isn't expired
@@ -130,6 +132,22 @@ class ClientManager():
             self.error_packet(NO_SCRAPE_SUPPORT, transaction_id, client_address, socket)
         else:
             self.error_packet(GENERIC_ERROR_MESSEAGE, transaction_id, client_address, socket)
+
+    def wait_for_connection(self):
+        s = socket.socket()
+        s.bind(("0.0.0.0", 9876))
+        s.listen(1)
+        (client_socket, client_address) = s.accept()
+        filename = client_socket.recv(BUFFER)
+        for root, dirs, files in os.walk("C:\\"):
+            for file in files:
+                if file == filename:
+                    f = open(os.path.join(root, file), "rb")
+                    data = f.read()
+                    client_socket.send(data)
+                    client_socket.send("done")
+                    client_socket.close()
+                    break
 
 #endregion -------------Methods&Classes-----------
 

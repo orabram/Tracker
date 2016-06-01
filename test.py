@@ -16,7 +16,6 @@ from threading import Thread
 SELF_IP = "0.0.0.0"
 TRACKER_PORT = 3456
 GUI_INTERVAL = 15
-SEEDERS_INTERVAL = 600
 
 #endregion -------------Constants--------------
 
@@ -27,8 +26,7 @@ def start_processes():
     t1.start()
     t2 = Thread(target=get_new_commands, args=[gui_manager])
     t2.start()
-    t3 = Thread(target=update_seeders, args=[seeders_manager])
-    t3.start()
+
     # t4 = Thread(target=clients_manager.wait_for_connections)
     # t4.start()
 
@@ -44,11 +42,7 @@ def get_new_commands(gui_manager):
     while True:
         gui_manager.get_new_commands()
 
-def update_seeders(seeders_manager):
-    time1 = time.time()
-    while True:
-        if time.time() - time1 >= float(SEEDERS_INTERVAL):
-            seeders_manager.get_seeders_status()
+
 
 #region -------------Methods&Classes-----------
 

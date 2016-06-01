@@ -1,0 +1,9 @@
+C:\Users\Or\Documents\GitHub\Tracker\Bittorrent Client\Bittorrent Client\bin\Debug\Bittorrent Client.exe.config
+C:\Users\Or\Documents\GitHub\Tracker\Bittorrent Client\Bittorrent Client\bin\Debug\Bittorrent Client.exe
+C:\Users\Or\Documents\GitHub\Tracker\Bittorrent Client\Bittorrent Client\bin\Debug\Bittorrent Client.pdb
+C:\Users\Or\Documents\GitHub\Tracker\Bittorrent Client\Bittorrent Client\obj\Debug\Bittorrent Client.csprojResolveAssemblyReference.cache
+C:\Users\Or\Documents\GitHub\Tracker\Bittorrent Client\Bittorrent Client\obj\Debug\Bittorrent_Client.Client.resources
+C:\Users\Or\Documents\GitHub\Tracker\Bittorrent Client\Bittorrent Client\obj\Debug\Bittorrent_Client.Properties.Resources.resources
+C:\Users\Or\Documents\GitHub\Tracker\Bittorrent Client\Bittorrent Client\obj\Debug\Bittorrent Client.csproj.GenerateResource.Cache
+C:\Users\Or\Documents\GitHub\Tracker\Bittorrent Client\Bittorrent Client\obj\Debug\Bittorrent Client.exe
+C:\Users\Or\Documents\GitHub\Tracker\Bittorrent Client\Bittorrent Client\obj\Debug\Bittorrent Client.pdb
